@@ -7,8 +7,8 @@ CYRILLIC_SYMBOLS = "абвгдеёжзийклмнопрстуфхцчшщъыь
 TRANSLATION = ("a", "b", "v", "g", "d", "e", "e", "j", "z", "i", "j", "k", "l", "m", "n", "o", "p", "r", "s", "t", "u",
                "f", "h", "ts", "ch", "sh", "sch", "", "y", "", "e", "yu", "ya", "je", "i", "ji", "g")
 PATH_TO_SORTED_DIRECTORY = '/Users/anatoliysafonov/Desktop/sorted/'
-# sys.argv[1]
-PATH_TO_UNSORTED_DIRECTORY = '/Users/anatoliysafonov/Desktop/unsorted/'
+PATH_TO_UNSORTED_DIRECTORY = sys.argv[1] + '/'
+print(PATH_TO_UNSORTED_DIRECTORY)
 LIST_OF_FOLDERS = {'pictures':     ['JPEG', 'PNG', 'JPG', 'SVG'],
                    'video':     ['AVI', 'MP4', 'MOV', 'MKV'],
                    'documents':    ['DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'],
