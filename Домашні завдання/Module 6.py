@@ -10,11 +10,11 @@ PATH_TO_SORTED_DIRECTORY = '/Users/anatoliysafonov/Desktop/sorted/'
 PATH_TO_UNSORTED_DIRECTORY = sys.argv[1] + '/'
 print(PATH_TO_UNSORTED_DIRECTORY)
 LIST_OF_FOLDERS = {'pictures':     ['JPEG', 'PNG', 'JPG', 'SVG'],
-                   'video':     ['AVI', 'MP4', 'MOV', 'MKV'],
+                   'video':        ['AVI', 'MP4', 'MOV', 'MKV'],
                    'documents':    ['DOC', 'DOCX', 'TXT', 'PDF', 'XLSX', 'PPTX'],
-                   'audio': ['MP3', 'OGG', 'WAV', 'AMR'],
-                   'archives':  ['ZIP', 'GZ', 'TAR'],
-                   'others': []
+                   'audio':        ['MP3', 'OGG', 'WAV', 'AMR'],
+                   'archives':     ['ZIP', 'GZ', 'TAR'],
+                   'others':       []
                    }
 
 # -------------- функція для нормалізації імені файлу ------------------
