@@ -59,11 +59,9 @@ def find_type_of_file(extention: str) -> str:
 def sort_files_in_directory(source_path) -> bool:
     # шукаємо все, що є в каталогу (файли + вкладені каталоги)
     list_of_files_in_directory = os.listdir(source_path)
-
     # якщо папка пуста, виходимо з программи
     if not list_of_files_in_directory:
         return True
-
     for current_item in list_of_files_in_directory:
         full_path_current_item = source_path + current_item
         # блок якщо в нас файл
@@ -111,5 +109,3 @@ if __name__ == '__main__':
     check_folders_exists()
     if sort_files_in_directory(PATH_TO_UNSORTED_DIRECTORY):
         print('Done')
-
-# Продивитись else ;
