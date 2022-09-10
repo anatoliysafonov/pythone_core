@@ -34,9 +34,8 @@ def normalize_name(name) -> str:
             normalized_name += char
     return normalized_name
 
+
 # Перевіряємо чи існуть каталоги для розміщення відсортированих файлів
-
-
 def check_folders_exists():
     for folder_name in LIST_OF_FOLDERS:
         if not os.path.isdir(PATH_TO_SORTED_DIRECTORY + folder_name):
@@ -59,7 +58,7 @@ def find_type_of_file(extention: str) -> str:
 def sort_files_in_directory(source_path) -> bool:
     # шукаємо все, що є в каталогу (файли + вкладені каталоги)
     list_of_files_in_directory = os.listdir(source_path)
-    # якщо папка пуста, виходимо з программи
+    # якщо папка пуста, виходимо з поточної папки, якщо це верхній рівень, то виходимо з программи
     if not list_of_files_in_directory:
         return True
     for current_item in list_of_files_in_directory:
@@ -69,15 +68,12 @@ def sort_files_in_directory(source_path) -> bool:
             # отримуємо окремо назву файла та його розширення
             name_current_item = os.path.splitext(current_item)[0]
             extention_current_item = os.path.splitext(current_item)[1]
-
             # будуємо шлях до новго каталога на основі типу файла якого ми переміщаємо
             destination_path_current_item = PATH_TO_SORTED_DIRECTORY + \
                 find_type_of_file(extention_current_item) + '/'
-
             # нормалізуємо імʼя файла
             name_of_file_normalized = normalize_name(
                 name_current_item) + extention_current_item
-
             # якщо файл це архів, то розрхівовуємо його в папці для архівів
             if extention_current_item[1:].upper() in LIST_OF_FOLDERS['archives']:
                 if not os.path.exists(destination_path_current_item + normalize_name(name_current_item)):
@@ -109,3 +105,5 @@ if __name__ == '__main__':
     check_folders_exists()
     if sort_files_in_directory(PATH_TO_UNSORTED_DIRECTORY):
         print('Done')
+
+# Продивитись else ;
