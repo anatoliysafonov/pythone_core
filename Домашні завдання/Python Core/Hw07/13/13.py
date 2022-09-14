@@ -1,7 +1,10 @@
-def to_indexed(source_file, output_file):
-    with open(source_file, 'r') as file:
-        data = file.readlines()
-    print(data)
-    with open(output_file, 'w') as file:
-        for num, st in enumerate(data):
-            file.write(': '.join((str(num), st)))
+def get_employees_by_profession(path, profession):
+    read_data = None
+    output_data = []
+    with open(path, 'r') as file:
+        read_data = file.readlines()
+    for item in range(len(read_data)):
+        if read_data[item].find(profession) != -1:
+            name = read_data[item].replace(profession, '')[:-1].strip()
+            output_data.append(name)ß
+    return ' '.join(output_data)
