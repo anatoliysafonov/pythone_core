@@ -6,6 +6,5 @@ def get_employees_by_profession(path, profession):
     for item in range(len(read_data)):
         if read_data[item].find(profession) != -1:
             name = read_data[item].replace(profession, '')[:-1].strip()
-            output_data.append(name)
-
+            output_data.append(name)ß
     return ' '.join(output_data)
