@@ -1,0 +1,17 @@
+data = [1, [[2, 3], 4, 5, 10]]
+
+
+def flatten(data):
+    output_list = []
+    if not data:
+        return output_list
+    for next_value in data:
+        if isinstance(next_value, int):
+            output_list.append(next_value)
+            continue
+        if isinstance(next_value, list):
+            output_list.extend(flatten(next_value))
+    return output_list
+
+
+print(flatten(data))
