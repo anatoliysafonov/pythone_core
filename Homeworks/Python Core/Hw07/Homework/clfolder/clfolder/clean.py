@@ -61,7 +61,7 @@ def sort_files_in_directory(source_path) -> bool:
     list_of_files_in_directory = os.listdir(source_path)
     # якщо папка пуста, виходимо з поточної папки, якщо це верхній рівень, то виходимо з программи
     if not list_of_files_in_directory:
-        print('There is nothing to sort...')
+        print('{} is empty'.format(source_path))
         return
     for current_item in list_of_files_in_directory:
         full_path_current_item = source_path + current_item
@@ -108,6 +108,7 @@ def main():
     else:
         print('No folder specified')
         quit()
+    check_folders_exists()
     sort_files_in_directory(PATH_TO_UNSORTED_DIRECTORY)
     print('Done')
 
