@@ -1,12 +1,13 @@
 from datetime import datetime
 
 # список словників users. Вхідні дані
-PERSONS = [{'name': 'Bill', 'birthday': datetime(year=2000, month=9, day=24)},
-           {'name': 'Tom', 'birthday': datetime(year=2000, month=9, day=24)},
-           {'name': 'Elle', 'birthday': datetime(year=2000, month=9, day=25)},
-           {'name': 'Anna', 'birthday': datetime(year=2000, month=9, day=26)},
-           {'name': 'Tonny', 'birthday': datetime(year=2000, month=9, day=24)},
-           {'name': 'Fafa', 'birthday': datetime(year=2000, month=9, day=28)}]
+PERSONS = [{'name': 'Bill', 'birthday': datetime(year=1956, month=9, day=24)},
+           {'name': 'Tom',  'birthday': datetime(year=2000, month=9, day=24)},
+           {'name': 'Elle', 'birthday': datetime(year=1973, month=9, day=25)},
+           {'name': 'Anna', 'birthday': datetime(year=1999, month=9, day=26)},
+           {'name': 'Tonny', 'birthday': datetime(year=1944, month=9, day=24)},
+           {'name': 'Fafa', 'birthday': datetime(year=2000, month=9, day=28)}
+           ]
 
 
 def get_birthdays_per_week(users: list) -> None:
