@@ -9,20 +9,21 @@ PERSONS = [{'name': 'Bill', 'birthday': datetime(year=1956, month=9, day=24)},
            {'name': 'Fafa', 'birthday': datetime(year=2000, month=9, day=28)}
            ]
 
+# знаходимо день привітання з врахуванням вихідних днів [Saturday, Sunday, Monday] -> Nonday
+
+
+def get_day_str(dt: datetime) -> str:
+    WEEKEND = ['Saturday', 'Sunday']
+    string = dt.strftime('%A')
+    if string in WEEKEND:
+        string = 'Monday'
+    return string
+
 
 def get_birthdays_per_week(users: list) -> None:
     # сортуємо вхідний список по датам нарождення
     list_persons_sorted = sorted(PERSONS, key=lambda x: x['birthday'])
     data_out = {}  # вловник вихідних даних
-
-    # знаходимо день привітання з врахуванням вихідних днів [Saturday, Sunday, Monday] -> Nonday
-    def get_day_str(dt: datetime) -> str:
-
-        WEEKEND = ['Saturday', 'Sunday']
-        string = dt.strftime('%A')
-        if string in WEEKEND:
-            string = 'Monday'
-        return string
 
     date_now = datetime.now()  # поточна дата
 
@@ -34,7 +35,7 @@ def get_birthdays_per_week(users: list) -> None:
         if 0 <= (birthday_this_year - date_now).days < 7:
             # стороке значення дня нарождення Monday...Sunday. Використається як ключ словника
             str_day = get_day_str(birthday_this_year)
-            if str_day in data_out.keys():
+            if str_day in data_out:
                 # якщо такий день в словнику вже існує, то добавляємо person в цей день
                 data_out[str_day] = ', '.join(
                     [data_out[str_day], person['name']])
