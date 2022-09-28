@@ -52,7 +52,7 @@ def name(*args) -> str:
 		raise ValueError(f'User with phone number {number} not  exists')
 	for key, value in PHONEBOOK.items():
 		if value == number:
-			return f'User with {number} is {key}'
+			return f'{key} : {number}'
 
 
 @input_error
@@ -67,7 +67,7 @@ def phone(*args) -> str:
 	user_name = args[0][0]
 	if user_name not in PHONEBOOK:
 		raise KeyError(f'User {user_name} non exists in phonebook')
-	return f'{user_name} has a {PHONEBOOK[user_name]}'
+	return f'{user_name} : {PHONEBOOK[user_name]}'
 
 
 def hello() -> str:
