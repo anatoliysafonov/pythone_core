@@ -1,11 +1,12 @@
 from decorator import input_error
-from classes import AdressBook, MESSAGE_HELP
+from data import AdressBook, MESSAGE_DATA
 from os import system as _system
 
 
 PHONEBOOK = AdressBook()
-NEW_LINE  = '\n'
+NEW_LINE = '\n'
 SEPARATOR = ', '
+
 
 @input_error
 def add(args: list = None) -> str:
@@ -26,8 +27,6 @@ def add(args: list = None) -> str:
 def change(*args) -> str:
     """
     Changes the phone number of an existing entry in the phone book
-    :param args:
-    :return:
     """
     if not args or len(args[0]) < 3:
         raise IndexError(
@@ -43,6 +42,9 @@ def change(*args) -> str:
 
 @input_error
 def delete(*args) -> str:
+    """
+    Delete the phone number of an existing entry in the phone book
+    """
     if not args:
         raise IndexError(
             f"-- Enter the user's name and phone number to delete --")
@@ -53,6 +55,9 @@ def delete(*args) -> str:
 
 @input_error
 def contact_delete(*args):
+    """
+    Delete entire record from phonebook
+    """
     user_name = args[0][0]
     return PHONEBOOK.del_record(user_name)
 
@@ -61,8 +66,6 @@ def contact_delete(*args):
 def name(*args) -> str:
     """
     Searches for a record by phone number. Return name of contact : numbers
-    :param args:
-    :return:
     """
     if not args:
         raise IndexError('-- Enter a phone number to search --')
@@ -78,8 +81,6 @@ def name(*args) -> str:
 def phone(*args) -> str:
     """
     Searches for a record by name and return  name : numbers
-    :param args:
-    :return:
     """
     if not args:
         raise IndexError('-- Enter a name  to search --')
@@ -109,7 +110,7 @@ def show_all() -> str:
     print(NEW_LINE)
     for key, value in PHONEBOOK.data.items():
         numbers = SEPARATOR.join([item.value for item in value.show_numbers()])
-        print(f'{key} : {numbers}')
+        print('contact: {:.<20}{:<10}'.format(key, numbers))
     print(f'-- Total records: {len(PHONEBOOK)} --')
     return string[:-1]
 
@@ -123,10 +124,24 @@ def stop() -> str:
 
 
 def out_help():
-    print(MESSAGE_HELP)
+    """
+    Print out the help message
+    """
+    print(NEW_LINE)
+    print('{:^20}{:^39}{:^60}'.format(
+        MESSAGE_DATA[0][0], MESSAGE_DATA[0][1], MESSAGE_DATA[0][2]))
+    print('{:-^128}'.format(''))
+    for i in range(1, len(MESSAGE_DATA)):
+        string = '{:>20} {:.<39} -> {:<60}'.format(
+            MESSAGE_DATA[i][0], MESSAGE_DATA[i][1], MESSAGE_DATA[i][2])
+        print(string)
+    print(NEW_LINE)
 
 
 def console_clear():
+    """
+    clear consol 
+    """
     _system('clear')
 
 
