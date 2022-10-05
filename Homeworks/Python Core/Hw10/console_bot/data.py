@@ -7,19 +7,25 @@ class Field:
     """
     class Field.
     """
-
-    def __init__(self, value: str) -> None:
-        self.value = self.normalize_value(value)
-
-    def normalize_value(self, value: str) -> str:
-        return value
+    pass
 
 
 class Phone(Field):
     """
     class Phone
     """
-    pass
+
+    def __init__(self, value: str) -> None:
+        self.value = value
+
+
+class Name (Field):
+    """
+    class Name
+    """
+
+    def __init__(self, value) -> None:
+        self.value = value
 
 
 class Record:
@@ -30,9 +36,11 @@ class Record:
     def __init__(self, name: str, phones=[], emails=[]) -> None:
         if not name:
             raise ValueError("-- ❗ Must be contact's name --")
-        self.name = Field(name)
-        self.phones = phones
-        self.emails = emails
+        self.name = Name(name)
+        if phones:
+            self.phones = [Phone(number) for number in phones]
+        else:
+            phones = []
 
     def _get_numbers(self) -> list:
         return self.phones
@@ -46,11 +54,11 @@ class Record:
         """
         numbers = [item.value for item in self.phones]
         for current_number in number:
-            if current_number not in numbers:
-                self.phones.append(Phone(current_number))
+            if current_number.value not in numbers:
+                self.phones.append(current_number)
             else:
                 print(
-                    f'-- ❗ Phone number {current_number} exists already --')
+                    f'-- ❗ Phone number {current_number.value} exists already --')
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """
@@ -78,7 +86,7 @@ class Record:
         """
         виводить в термінал всі записи в телефонній книзі
         """
-        return self.phones
+        return [phone.value for phone in self.phones]
 
     def delete_number(self, numbers: list) -> str:
         is_deleted = False
@@ -95,26 +103,17 @@ class Record:
 class AdressBook(UserDict):
     total_records = 0
 
-    def __init__(self) -> None:
-        self.data = {}
-
-    def add_record(self, name: str, numbers: list) -> str:
-        number_unique = []
-        for number in numbers:
-            if number not in number_unique:
-                number_unique.append(number)
-        if name in self.data:
-            self.data[name].add_number(number_unique)
-        else:
-            number_unique = [Phone(item) for item in number_unique]
-            record = Record(name, phones=number_unique)
-            self.data[name] = record
+    def add_record(self, record: Record) -> str:
+        if record.name.value not in self:
+            self.data[record.name.value] = record
             AdressBook.total_records += 1
+        else:
+            self.data[record.name.value].add_number(record.phones)
         return '✅ Done...'
 
     def del_record(self, name: str) -> str:
         try:
-            self.data.pop(name)
+            self.pop(name)
         except KeyError:
             return (f"-- ❗ Can't delete {name}. Contact not found --")
         else:

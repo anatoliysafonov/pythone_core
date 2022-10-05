@@ -1,5 +1,5 @@
 from decorator import input_error
-from data import AdressBook, MESSAGE_DATA
+from data import AdressBook, Record, MESSAGE_DATA
 from os import system as _system
 
 
@@ -20,8 +20,9 @@ def add(args: list = None) -> str:
             f"-- ❕ Enter the user's name and phone number --")
     if len(args) < 2:
         raise IndexError(f'-- ❗ You have not entered a phone number --')
-    user_name, *number = args
-    return PHONEBOOK.add_record(user_name, number)
+    user_name, *numbers = args
+    record = Record(user_name, numbers)
+    return PHONEBOOK.add_record(record)
 
 
 @input_error
@@ -109,7 +110,7 @@ def show_all() -> str:
     if not PHONEBOOK.data:
         return '-- ❗ PhoneBook is empty. Add some contact --'
     for key, value in PHONEBOOK.data.items():
-        numbers = SEPARATOR.join([item.value for item in value.show_numbers()])
+        numbers = SEPARATOR.join([item for item in value.show_numbers()])
         print('contact: {:.<20}{:<10}'.format(key, numbers))
     print(f'-- Total records: {len(PHONEBOOK)} --')
     return string[:-1]
