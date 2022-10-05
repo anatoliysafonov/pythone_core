@@ -1,5 +1,5 @@
 from decorator import input_error
-from data import AdressBook, Record, MESSAGE_DATA
+from data import AdressBook, Record, Phone, MESSAGE_DATA
 from os import system as _system
 
 
@@ -106,14 +106,12 @@ def show_all() -> str:
     prints all entries in the phone book
     :return:
     """
-    string = ''
     if not PHONEBOOK.data:
         return '-- ❗ PhoneBook is empty. Add some contact --'
     for key, value in PHONEBOOK.data.items():
-        numbers = SEPARATOR.join([item for item in value.show_numbers()])
-        print('contact: {:.<20}{:<10}'.format(key, numbers))
-    print(f'-- Total records: {len(PHONEBOOK)} --')
-    return string[:-1]
+        string = SEPARATOR.join(
+            [phone.value for phone in value.show_numbers()])
+        print(f'{key} : {string}')
 
 
 def stop() -> str:

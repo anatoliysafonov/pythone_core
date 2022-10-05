@@ -18,6 +18,10 @@ class Phone(Field):
     def __init__(self, value: str) -> None:
         self.value = value
 
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, type(self)):
+            return self.value == other.value
+
 
 class Name (Field):
     """
@@ -33,7 +37,7 @@ class Record:
     class Record contains Name(Field), Phones(list), Email(list) 
     """
 
-    def __init__(self, name: str, phones=[], emails=[]) -> None:
+    def __init__(self, name: str, phones=[]) -> None:
         if not name:
             raise ValueError("-- ❗ Must be contact's name --")
         self.name = Name(name)
@@ -53,9 +57,9 @@ class Record:
         добавляє новий номсер телефона якщо його немає в списку.
         """
         isexists = False
-        numbers = [item.value for item in self.phones]
+        #numbers = [item.value for item in self.phones]
         for current_number in number:
-            if current_number.value not in numbers:
+            if current_number not in self.phones:
                 self.phones.append(current_number)
             else:
                 print(
@@ -89,7 +93,7 @@ class Record:
         """
         виводить в термінал всі записи в телефонній книзі
         """
-        return [phone.value for phone in self.phones]
+        return self.phones
 
     def delete_number(self, numbers: list) -> str:
         is_deleted = False
