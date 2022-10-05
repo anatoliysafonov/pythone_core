@@ -26,7 +26,7 @@ class Record:
 
     def __init__(self, name: str, phones=[], emails=[]) -> None:
         if not name:
-            raise ValueError("-- Must be contact's name --")
+            raise ValueError("-- ❗ Must be contact's name ❗ --")
         self.name = Field(name)
         self.phones = phones
         self.emails = emails
@@ -46,7 +46,8 @@ class Record:
             if current_number not in numbers:
                 self.phones.append(Phone(current_number))
             else:
-                print(f'-- Phone number {current_number} exists already --')
+                print(
+                    f'-- ❗ Phone number {current_number} exists already ❗ --')
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """
@@ -59,8 +60,8 @@ class Record:
                 self.phones[index] = Phone(new_number)
                 is_founded = True
         if not is_founded:
-            raise ValueError('-- Number to change not exists --')
-        return 'Changed...'
+            raise ValueError('-- ❗ Number to change not exists ❗ --')
+        return '✅ Changed...'
 
     def out_info(self) -> str:
         numbers = [item.value for item in self.phones]
@@ -81,8 +82,8 @@ class Record:
                     self.phones.remove(phone)
                     is_deleted = True
         if is_deleted:
-            return 'Deleted...'
-        raise ValueError('-- Numbers to delete not found in adressbook --')
+            return '✅ Deleted...'
+        raise ValueError('-- ❗ Numbers to delete not found in adressbook ❗ --')
 
 
 class AdressBook(UserDict):
@@ -103,15 +104,15 @@ class AdressBook(UserDict):
             record = Record(name, phones=number_unique)
             self.data[name] = record
             AdressBook.total_records += 1
-        return 'Done...'
+        return '✅ Done...'
 
     def del_record(self, name: str) -> str:
         try:
             self.data.pop(name)
         except KeyError:
-            return (f"-- Can't delete {name}. Contact not found --")
+            return (f"-- ❗ Can't delete {name}. Contact not found ❗ --")
         else:
-            print(f'-- contact {name} deleted... --')
+            print(f'✅ contact {name} deleted...')
 
     def __len__(self):
         return AdressBook.total_records
