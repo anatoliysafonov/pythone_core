@@ -52,6 +52,7 @@ class Record:
         """
         добавляє новий номсер телефона якщо його немає в списку.
         """
+        isexists = False
         numbers = [item.value for item in self.phones]
         for current_number in number:
             if current_number.value not in numbers:
@@ -59,6 +60,8 @@ class Record:
             else:
                 print(
                     f'-- ❗ Phone number {current_number.value} exists already --')
+                isexists = True
+        return isexists
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """
@@ -104,12 +107,15 @@ class AdressBook(UserDict):
     total_records = 0
 
     def add_record(self, record: Record) -> str:
+        result = False
         if record.name.value not in self:
             self.data[record.name.value] = record
             AdressBook.total_records += 1
         else:
-            self.data[record.name.value].add_number(record.phones)
-        return '✅ Done...'
+            result = self.data[record.name.value].add_number(record.phones)
+        if not result:
+            return '✅ Done...'
+        return ''
 
     def del_record(self, name: str) -> str:
         try:
