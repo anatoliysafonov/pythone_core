@@ -26,6 +26,7 @@ class Record:
     """
     class Record contains Name(Field), Phones(list), Email(list) 
     """
+
     def __init__(self, name: str, phones=[], emails=[]) -> None:
         if not name:
             raise ValueError("-- ❗ Must be contact's name --")
