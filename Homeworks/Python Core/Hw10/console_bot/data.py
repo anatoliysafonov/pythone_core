@@ -5,7 +5,7 @@ SEPARATOR = ', '
 
 class Field:
     """
-    class Field
+    class Field.
     """
 
     def __init__(self, value: str) -> None:
@@ -23,10 +23,12 @@ class Phone(Field):
 
 
 class Record:
-
+    """
+    class Record contains Name(Field), Phones(list), Email(list) 
+    """
     def __init__(self, name: str, phones=[], emails=[]) -> None:
         if not name:
-            raise ValueError("-- ❗ Must be contact's name ❗ --")
+            raise ValueError("-- ❗ Must be contact's name --")
         self.name = Field(name)
         self.phones = phones
         self.emails = emails
@@ -47,7 +49,7 @@ class Record:
                 self.phones.append(Phone(current_number))
             else:
                 print(
-                    f'-- ❗ Phone number {current_number} exists already ❗ --')
+                    f'-- ❗ Phone number {current_number} exists already --')
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """
@@ -60,10 +62,13 @@ class Record:
                 self.phones[index] = Phone(new_number)
                 is_founded = True
         if not is_founded:
-            raise ValueError('-- ❗ Number to change not exists ❗ --')
+            raise ValueError('-- ❗ Number to change not exists --')
         return '✅ Changed...'
 
     def out_info(self) -> str:
+        """
+        Повертає інформацію про всі номера данного запису
+        """
         numbers = [item.value for item in self.phones]
         numbers = SEPARATOR.join(numbers)
         return f'{self.name.value} : {numbers}'
@@ -83,7 +88,7 @@ class Record:
                     is_deleted = True
         if is_deleted:
             return '✅ Deleted...'
-        raise ValueError('-- ❗ Numbers to delete not found in adressbook ❗ --')
+        raise ValueError('-- ❗ Numbers to delete not found in adressbook --')
 
 
 class AdressBook(UserDict):
@@ -110,7 +115,7 @@ class AdressBook(UserDict):
         try:
             self.data.pop(name)
         except KeyError:
-            return (f"-- ❗ Can't delete {name}. Contact not found ❗ --")
+            return (f"-- ❗ Can't delete {name}. Contact not found --")
         else:
             print(f'✅ contact {name} deleted...')
 

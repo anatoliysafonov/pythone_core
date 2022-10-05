@@ -17,9 +17,9 @@ def add(args: list = None) -> str:
     """
     if not args:
         raise IndexError(
-            f"-- ❕ Enter the user's name and phone number ❕ --")
+            f"-- ❕ Enter the user's name and phone number --")
     if len(args) < 2:
-        raise IndexError(f'-- ❗ You have not entered a phone number ❗ --')
+        raise IndexError(f'-- ❗ You have not entered a phone number --')
     user_name, *number = args
     return PHONEBOOK.add_record(user_name, number)
 
@@ -31,12 +31,12 @@ def change(*args) -> str:
     """
     if not args or len(args[0]) < 3:
         raise IndexError(
-            "-- ❗ The name and also the phone number are not correct ❗ --")
+            "-- ❗ The name and also the phone number are not correct --")
     user_name, old_number, new_number = args[0]
     try:
         record = PHONEBOOK.data[user_name]
     except KeyError:
-        raise KeyError('-- ❗ User not found ❗ --')
+        raise KeyError('-- ❗ User not found --')
     else:
         return record.change_number(user_name, old_number, new_number)
 
@@ -75,7 +75,7 @@ def name(*args) -> str:
         phones = [item.value for item in record.phones]
         if number in phones:
             return f'{name} : {SEPARATOR.join(phones)}'
-    return f'-- ❗ Contact not fount ❗ --'
+    return f'-- ❗ Contact not fount --'
 
 
 @input_error
@@ -87,7 +87,7 @@ def phone(*args) -> str:
         raise IndexError('-- Enter a name  to search --')
     user_name = args[0][0]
     if user_name not in PHONEBOOK.data:
-        raise KeyError(f'-- ❗ User {user_name} non exists in phonebook ❗ --')
+        raise KeyError(f'-- ❗ User {user_name} non exists in phonebook --')
     record = PHONEBOOK.data[user_name]
     return record.out_info()
 
@@ -107,7 +107,7 @@ def show_all() -> str:
     """
     string = ''
     if not PHONEBOOK.data:
-        return '-- ❗ PhoneBook is empty. Add some contact ❗ --'
+        return '-- ❗ PhoneBook is empty. Add some contact --'
     for key, value in PHONEBOOK.data.items():
         numbers = SEPARATOR.join([item.value for item in value.show_numbers()])
         print('contact: {:.<20}{:<10}'.format(key, numbers))
