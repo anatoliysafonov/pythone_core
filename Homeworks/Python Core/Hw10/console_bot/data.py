@@ -1,11 +1,31 @@
 from collections import UserDict
 
-SEPARATOR = ', '
+SEPARATOR               = ', '
+CONTACT_NOT_FOUND       = '-- ❗ Contact not found --'
+NUMBER_NOT_FOUND        = '-- ❗ Number not found --'
+PHONEBOOK_IS_EMPTY      = '-- ❗ PhoneBook is empty. Add some contact --'
+NAME_NUMBER_NOT_CORRECT = '-- ❗ The name and the phone number are not correct --'
+ENTER_NAME_NUMBER       = "-- ❗ Enter the user's name and phone --"
+MESSAGE_DATA            = [['COMMAND', 'ARGUMENTS', 'ACTION'],
+                           ['add', '[name][phone(1)][phone(2)]...[phone(N)]',
+                           'create / add contact with phone numbers'],
+                           ['change', '[name][old_phone][new_phone]',
+                           "change replace contact's old phone number wuth new phone numbers"],
+                           ['delete', '[name][phone(1)][phone(2)]...[phone(N)]',
+                           "delete contact's phone number"],
+                           ['name', '[phone_number]', 'search contact by[phone_number]'],
+                           ['phone', '[name]', "search phone number by contact's[name]"],
+                           ['show all', '', 'display all contact in adressbook'],
+                           ['contact delete', '[name]',
+                           'delete contact with [name]from adressbook'],
+                           ['cls', '', 'clear console'],
+                           ['exit,close,good by', '', 'exit']]
 
 
 class Field:
     """ class Field """
     pass
+
 
 
 class Phone(Field):
@@ -19,6 +39,7 @@ class Phone(Field):
             return self.value == other.value
 
 
+
 class Name (Field):
     """ class Name """
 
@@ -28,21 +49,26 @@ class Name (Field):
 
 class Record:
     """ class Record contains Name(Field), Phones(list), Email(list) """
-
     def __init__(self, name: str, phones=[]) -> None:
         if not name:
-            raise ValueError("-- ❗ Must be contact's name --")
+            raise ValueError(CONTACT_NOT_FOUND)
         self.name = Name(name)
         if phones:
             self.phones = [Phone(number) for number in phones]
         else:
             phones = []
 
+
+
     def _get_numbers(self) -> list:
         return self.phones
 
+
+
     def _get_emails(self):
         return self.emails
+
+
 
     def add_number(self, number) -> str:
         """ добавляє новий номсер телефона якщо його немає в списку """
@@ -57,9 +83,10 @@ class Record:
                 isexists = True
         return isexists
 
+
+
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """ міняє номер існуючого контакту з існуючим номером на новий номер """
-
         is_founded = False
         for current_phone in self._get_numbers():
             if current_phone.value == old_number:
@@ -67,8 +94,10 @@ class Record:
                 self.phones[index] = Phone(new_number)
                 is_founded = True
         if not is_founded:
-            raise ValueError('-- ❗ Number to change not exists --')
-        return '✅ Changed...'
+            raise ValueError(NUMBER_NOT_FOUND)
+        return '... Changed ...'
+
+
 
     def out_info(self) -> str:
         """ Повертає інформацію про всі номера данного запису """
@@ -76,7 +105,8 @@ class Record:
         numbers = SEPARATOR.join(numbers)
         return f'{self.name.value} : {numbers}'
 
-    def show_numbers(self):
+
+    def get_numbers(self):
         """ виводить в термінал всі записи в телефонній книзі """
         return self.phones
 
@@ -88,8 +118,8 @@ class Record:
                     self.phones.remove(phone)
                     is_deleted = True
         if is_deleted:
-            return '✅ Deleted...'
-        raise ValueError('-- ❗ Numbers to delete not found in adressbook --')
+            return '... Deleted ...'
+        raise ValueError(NUMBER_NOT_FOUND)
 
 
 class AdressBook(UserDict):
@@ -103,34 +133,17 @@ class AdressBook(UserDict):
         else:
             result = self.data[record.name.value].add_number(record.phones)
         if not result:
-            return '✅ Done...'
+            return '... Done ...'
         return ''
 
     def del_record(self, name: str) -> str:
         try:
             self.pop(name)
         except KeyError:
-            return (f"-- ❗ Can't delete {name}. Contact not found --")
+            return (CONTACT_NOT_FOUND)
         else:
-            print(f'✅ contact {name} deleted...')
+            print(f'... contact {name} deleted ...')
 
     def __len__(self):
         return AdressBook.total_records
 
-
-MESSAGE_DATA = [['COMMAND', 'ARGUMENTS', 'ACTION'],
-                ['add', '[name][phone(1)][phone(2)]...[phone(N)]',
-                'create / add contact with phone numbers'],
-                ['change', '[name][old_phone][new_phone]',
-                "change replace contact's old phone number wuth new phone numbers"],
-                ['delete', '[name][phone(1)][phone(2)]...[phone(N)]',
-                "delete contact's phone number"],
-                ['name', '[phone_number]', 'search contact by[phone_number]'],
-                ['phone', '[name]', "search phone number by contact's[name]"],
-                ['show all', '', 'display all contact in adressbook'],
-                ['contact delete', '[name]',
-                'delete contact with [name]from adressbook'],
-                ['cls', '', 'clear console'],
-                ['exit,close,good by', '', 'exit']]
-
-CONTACT_NOT_FOUND = '-- ❗ Contact not found --'

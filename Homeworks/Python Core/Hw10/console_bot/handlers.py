@@ -1,9 +1,9 @@
 from decorator import input_error
-from data import AdressBook, Record, MESSAGE_DATA
 from os import system as _system
+import data
 
 
-PHONEBOOK = AdressBook()
+PHONEBOOK = data.AdressBook()
 NEW_LINE = '\n'
 SEPARATOR = ', '
 
@@ -12,11 +12,11 @@ SEPARATOR = ', '
 def add(*args ) -> str:
     """  Adds a new entry to the phonebook """
 
-    if not args     : raise IndexError(f"-- ❕ Enter the user's name and phone number --")
-    if len(args) < 2: raise IndexError(f'-- ❗ You have not entered a phone number --')
+    if not args     : raise IndexError(data.ENTER_NAME_NUMBER)
+    if len(args) < 2: raise IndexError(data.NUMBER_NOT_FOUND)
 
     user_name, *numbers = args
-    record = Record(user_name, numbers)
+    record = data.Record(user_name, numbers)
     return PHONEBOOK.add_record(record)
 
 
@@ -25,12 +25,12 @@ def add(*args ) -> str:
 def change(*args) -> str:
     """ Changes the phone number of an existing entry in the phone book """
     
-    if not args or len(args) < 3: raise IndexError("-- ❗ The name and the phone number are not correct --")
+    if not args or len(args) < 3: raise IndexError(data.NAME_NUMBER_NOT_CORRECT)
     user_name, old_number, new_number = args
     try:
         record = PHONEBOOK.data[user_name]
     except KeyError:
-        raise KeyError('-- ❗ User not found --')
+        raise KeyError(data.CONTACT_NOT_FOUND)
     else:
         return record.change_number(user_name, old_number, new_number)
 
@@ -40,7 +40,7 @@ def change(*args) -> str:
 def delete(*args) -> str:
     """ Delete the phone number of an existing entry in the phone book """
 
-    if not args: raise IndexError(f"-- Enter the user's name and phone number to delete --")
+    if not args: raise IndexError(data.ENTER_NAME_NUMBER)
     user_name, *numbers = args
     record = PHONEBOOK.data[user_name]
     return record.delete_number(numbers)
@@ -51,7 +51,7 @@ def delete(*args) -> str:
 def contact_delete(*args):
     """ Delete entire record from phonebook """
 
-    if not args: raise ValueError("-- ❗ Enter contact's name to delete --")
+    if not args: raise ValueError(data.ENTER_NAME_NUMBER)
     user_name, *_ = args
     return PHONEBOOK.del_record(user_name)
 
@@ -61,7 +61,7 @@ def contact_delete(*args):
 def name(*args) -> str:
     """ Searches for a record by phone number. Return name of contact : numbers """
 
-    if not args: raise IndexError('--  Enter a phone number to search --')
+    if not args: raise IndexError(data.NUMBER_NOT_FOUND)
     number, *_ = args
     for name, record in PHONEBOOK.data.items():
         phones = [item.value for item in record.phones]
@@ -75,7 +75,7 @@ def phone(*args) -> str:
     """ Searches for a record by name and return  name : numbers """
     if not args: raise IndexError('-- Enter a name  to search --')
     user_name, *_ = args
-    if user_name not in PHONEBOOK.data: raise KeyError('-- ❗ User not found --')
+    if user_name not in PHONEBOOK.data: raise KeyError(data.CONTACT_NOT_FOUND)
     record = PHONEBOOK.data[user_name]
     return record.out_info()
 
@@ -88,10 +88,10 @@ def hello() -> str:
 
 def show_all() -> str:
     """ prints all entries in the phone book """
-    if not PHONEBOOK.data: return '-- ❗ PhoneBook is empty. Add some contact --'
+    if not PHONEBOOK.data: return data.PHONEBOOK_IS_EMPTY
     for key, value in PHONEBOOK.data.items():
         string = SEPARATOR.join(
-            [phone.value for phone in value.show_numbers()])
+            [phone.value for phone in value.get_numbers()])
         print(f'{key} : {string}')
 
 
@@ -104,11 +104,11 @@ def out_help():
     """ Print out the help message """
     print(NEW_LINE)
     print('{:^20}{:^39}{:^60}'.format(
-        MESSAGE_DATA[0][0], MESSAGE_DATA[0][1], MESSAGE_DATA[0][2]))
+        data.MESSAGE_DATA[0][0], data.MESSAGE_DATA[0][1], data.MESSAGE_DATA[0][2]))
     print('{:-^128}'.format(''))
-    for i in range(1, len(MESSAGE_DATA)):
+    for i in range(1, len(data.MESSAGE_DATA)):
         string = '{:>20} {:.<39} -> {:<60}'.format(
-            MESSAGE_DATA[i][0], MESSAGE_DATA[i][1], MESSAGE_DATA[i][2])
+            data.MESSAGE_DATA[i][0], data.MESSAGE_DATA[i][1], data.MESSAGE_DATA[i][2])
         print(string)
     print(NEW_LINE)
 
