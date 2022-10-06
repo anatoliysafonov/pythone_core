@@ -50,8 +50,7 @@ class Name (Field):
 class Record:
     """ class Record contains Name(Field), Phones(list), Email(list) """
     def __init__(self, name: str, phones=[]) -> None:
-        if not name:
-            raise ValueError(CONTACT_NOT_FOUND)
+        if not name: raise ValueError(CONTACT_NOT_FOUND)
         self.name = Name(name)
         if phones:
             self.phones = [Phone(number) for number in phones]
@@ -78,8 +77,7 @@ class Record:
             if current_number not in self.phones:
                 self.phones.append(current_number)
             else:
-                print(
-                    f'-- ❗ Phone number {current_number.value} exists already --')
+                print(f'-- ❗ Phone number {current_number.value} exists already --')
                 isexists = True
         return isexists
 
@@ -93,8 +91,7 @@ class Record:
                 index = self.phones.index(current_phone)
                 self.phones[index] = Phone(new_number)
                 is_founded = True
-        if not is_founded:
-            raise ValueError(NUMBER_NOT_FOUND)
+        if not is_founded: raise ValueError(NUMBER_NOT_FOUND)
         return '... Changed ...'
 
 
