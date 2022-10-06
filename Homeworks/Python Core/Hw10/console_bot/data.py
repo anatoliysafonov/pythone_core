@@ -4,16 +4,12 @@ SEPARATOR = ', '
 
 
 class Field:
-    """
-    class Field.
-    """
+    """ class Field """
     pass
 
 
 class Phone(Field):
-    """
-    class Phone
-    """
+    """ class Phone """
 
     def __init__(self, value: str) -> None:
         self.value = value
@@ -24,18 +20,14 @@ class Phone(Field):
 
 
 class Name (Field):
-    """
-    class Name
-    """
+    """ class Name """
 
     def __init__(self, value) -> None:
         self.value = value
 
 
 class Record:
-    """
-    class Record contains Name(Field), Phones(list), Email(list) 
-    """
+    """ class Record contains Name(Field), Phones(list), Email(list) """
 
     def __init__(self, name: str, phones=[]) -> None:
         if not name:
@@ -53,9 +45,7 @@ class Record:
         return self.emails
 
     def add_number(self, number) -> str:
-        """
-        добавляє новий номсер телефона якщо його немає в списку.
-        """
+        """ добавляє новий номсер телефона якщо його немає в списку """
         isexists = False
         #numbers = [item.value for item in self.phones]
         for current_number in number:
@@ -68,9 +58,8 @@ class Record:
         return isexists
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
-        """
-        міняє номер існуючого контакту з існуючим номером на новий номер
-        """
+        """ міняє номер існуючого контакту з існуючим номером на новий номер """
+
         is_founded = False
         for current_phone in self._get_numbers():
             if current_phone.value == old_number:
@@ -82,17 +71,13 @@ class Record:
         return '✅ Changed...'
 
     def out_info(self) -> str:
-        """
-        Повертає інформацію про всі номера данного запису
-        """
+        """ Повертає інформацію про всі номера данного запису """
         numbers = [item.value for item in self.phones]
         numbers = SEPARATOR.join(numbers)
         return f'{self.name.value} : {numbers}'
 
     def show_numbers(self):
-        """
-        виводить в термінал всі записи в телефонній книзі
-        """
+        """ виводить в термінал всі записи в телефонній книзі """
         return self.phones
 
     def delete_number(self, numbers: list) -> str:
@@ -147,3 +132,5 @@ MESSAGE_DATA = [['COMMAND', 'ARGUMENTS', 'ACTION'],
                 'delete contact with [name]from adressbook'],
                 ['cls', '', 'clear console'],
                 ['exit,close,good by', '', 'exit']]
+
+CONTACT_NOT_FOUND = '-- ❗ Contact not found --'

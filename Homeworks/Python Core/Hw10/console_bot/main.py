@@ -15,7 +15,7 @@ def main():
         if not arguments:
             text = func()
         else:
-            text = func(arguments)
+            text = func(*arguments)
         if text:
             print(text)
 
