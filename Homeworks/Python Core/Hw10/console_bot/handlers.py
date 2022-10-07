@@ -66,7 +66,7 @@ def name(*args) -> str:
     for name, record in PHONEBOOK.data.items():
         phones = [item.value for item in record.phones]
         if number in phones: return f'{name} : {SEPARATOR.join(phones)}'
-    return 
+    return data.CONTACT_NOT_FOUND
 
 
 
@@ -93,6 +93,7 @@ def show_all() -> str:
         string = SEPARATOR.join(
             [phone.value for phone in value.get_numbers()])
         print(f'{key} : {string}')
+    print(f'total contacts : {PHONEBOOK.total_records}')
 
 
 def stop() -> str:

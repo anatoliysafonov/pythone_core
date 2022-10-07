@@ -49,7 +49,7 @@ class Name (Field):
 
 class Record:
     """ class Record contains Name(Field), Phones(list), Email(list) """
-    def __init__(self, name: str, phones=[]) -> None:
+    def __init__(self, name: str, phones) -> None:
         if not name: raise ValueError(CONTACT_NOT_FOUND)
         self.name = Name(name)
         if phones:
@@ -58,21 +58,10 @@ class Record:
             phones = []
 
 
-
-    def _get_numbers(self) -> list:
-        return self.phones
-
-
-
-    def _get_emails(self):
-        return self.emails
-
-
-
     def add_number(self, number) -> str:
         """ добавляє новий номсер телефона якщо його немає в списку """
         isexists = False
-        #numbers = [item.value for item in self.phones]
+        print(number)
         for current_number in number:
             if current_number not in self.phones:
                 self.phones.append(current_number)
@@ -85,11 +74,14 @@ class Record:
 
     def change_number(self, name: str, old_number: str, new_number: str) -> str:
         """ міняє номер існуючого контакту з існуючим номером на новий номер """
+        old_number = Phone(old_number)
+        new_number = Phone(new_number)
+
         is_founded = False
-        for current_phone in self._get_numbers():
-            if current_phone.value == old_number:
+        for current_phone in self.phones:
+            if current_phone == old_number:
                 index = self.phones.index(current_phone)
-                self.phones[index] = Phone(new_number)
+                self.phones[index] = new_number
                 is_founded = True
         if not is_founded: raise ValueError(NUMBER_NOT_FOUND)
         return '... Changed ...'
@@ -109,9 +101,11 @@ class Record:
 
     def delete_number(self, numbers: list) -> str:
         is_deleted = False
+
         for number in numbers:
+            number = Phone(number)
             for phone in self.phones:
-                if number == phone.value:
+                if number == phone:
                     self.phones.remove(phone)
                     is_deleted = True
         if is_deleted:
