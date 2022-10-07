@@ -62,11 +62,15 @@ def name(*args) -> str:
     """ Searches for a record by phone number. Return name of contact : numbers """
 
     if not args: raise IndexError(data.NUMBER_NOT_FOUND)
+    return_message = data.CONTACT_NOT_FOUND
     number, *_ = args
     for name, record in PHONEBOOK.data.items():
         phones = [item.value for item in record.phones]
-        if number in phones: return f'{name} : {SEPARATOR.join(phones)}'
-    return data.CONTACT_NOT_FOUND
+        if number in phones:
+            print (f'{name} : {SEPARATOR.join(phones)}')
+            return_message = '... Done ...'
+    
+    return return_message
 
 
 
