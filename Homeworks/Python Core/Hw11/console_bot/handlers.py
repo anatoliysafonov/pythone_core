@@ -110,7 +110,9 @@ def hello() -> str:
 #     print(f'total contacts : {PHONEBOOK.total_records}')
 
 def show_all ():
-    number_rows = len(PHONEBOOK)
+    if not PHONEBOOK.data: 
+        return data.PHONEBOOK_IS_EMPTY
+    size = number_rows = len(PHONEBOOK)
     if number_rows > 5:
         while True:
             try:
@@ -131,10 +133,13 @@ def show_all ():
             print(LINE)
         start_index = list_of_keys.index(records[0]) +1
         stop_index  = list_of_keys.index(records[-1])+1
-        print('{}..{} from {} records'.format(start_index, stop_index, len(PHONEBOOK)))
-        char = input('press "C/c" to escape or any key to continue : ')
+        print('◀ {}..{} ▶ from {} records'.format(start_index, stop_index, len(PHONEBOOK)))
+        if stop_index == size:
+            break
+        char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
             break
+    return "... Done ..."
 
 
 def stop() -> str:
