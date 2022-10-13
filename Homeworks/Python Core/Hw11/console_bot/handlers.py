@@ -1,6 +1,7 @@
 from decorator import input_error
 from os import system as _system
 import data
+import re
 
 
 PHONEBOOK = data.AdressBook()
@@ -9,6 +10,13 @@ SEPARATOR = ', '
 LINE = '+'+'-'*20+'+'+'-'*50+'+'+'-'*17+"+"
 HEADER = '{}|{:^20}|{:^50}|{:^17}|{}'.format(LINE+'\n','N A M E', 'P H O N E S', 'B I R T H D A Y','\n'+LINE)
 
+def is_date(date):
+    resault = re.search(r'^\d{2}/\d{2}/\d{4}$', str(date))
+    return resault != None
+
+def is_phone(phone):
+    result = re.search(r'^\d{10}$', phone)
+    return result != None
 
 
 @input_error
@@ -65,17 +73,22 @@ def contact_delete(*args):
 
 @input_error
 def name(*args) -> str:
-    """ Searches for a record by phone number. Return name of contact : numbers """
+    """ Searches for a record by phone number or by date of birth. Return name of contact : numbers """
 
     if not args: raise IndexError(data.NUMBER_NOT_FOUND)
     return_message = data.CONTACT_NOT_FOUND
-    number, *_ = args
-    for name, record in PHONEBOOK.data.items():
-        phones = [item.value for item in record.phones]
-        if number in phones:
-            print (f'{name} : {SEPARATOR.join(phones)}')
-            return_message = '... Done ...'
-    
+    string, *_ = args
+    if is_phone(string):
+        for name, record in PHONEBOOK.data.items():
+            phones = [item.value for item in record.phones]
+            if string in phones:
+                print (f'{name} : {SEPARATOR.join(phones)}')
+                return_message = '... Done ...'
+    if is_date(string):
+        for record in PHONEBOOK.values():
+            if string == record.birthday.value:
+                print (f'{record.name.value} : {string}')
+                return_message = '... Done ...'
     return return_message
 
 
@@ -109,8 +122,9 @@ def show_all ():
     if number_rows > MAX_SIZE:
         while True:
             try:
-                number_rows = int(input('PhobeBook is too large. Enter number of rows to display: '))
-            except ValueError:
+                print('PHONEBOOK ➜ {} records'.format(len(PHONEBOOK)))
+                number_rows = int(input('PhobeBook is too large. Enter number of rows to output: '))
+            except ValueError:    
                 print(data.NUMBER_NOT_FOUND)
             else:
                 if number_rows > len(PHONEBOOK):
@@ -143,11 +157,11 @@ def stop() -> str:
 def out_help():
     """ Print out the help message """
     print(NEW_LINE)
-    print('{:^20}{:^39}{:^60}'.format(
+    print('{:^20}{:^39}{:^62}'.format(
         data.MESSAGE_DATA[0][0], data.MESSAGE_DATA[0][1], data.MESSAGE_DATA[0][2]))
-    print('{:-^128}'.format(''))
+    print('{:-^130}'.format(''))
     for i in range(1, len(data.MESSAGE_DATA)):
-        string = '{:>20} {:.<39} -> {:<60}'.format(
+        string = '{:·<20} ➜ {:·^39} ➜ {:·<65}'.format(
             data.MESSAGE_DATA[i][0], data.MESSAGE_DATA[i][1], data.MESSAGE_DATA[i][2])
         print(string)
     print(NEW_LINE)

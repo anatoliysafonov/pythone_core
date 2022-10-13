@@ -9,11 +9,11 @@ NUMBER_NOT_FOUND        = '-- ❗ Number not found --'
 PHONEBOOK_IS_EMPTY      = '-- ❗ PhoneBook is empty. Add some contact --'
 NAME_NUMBER_NOT_CORRECT = '-- ❗ The name and the phone number are not correct --'
 ENTER_NAME_NUMBER       = "-- ❗ Enter the user's name and phone --"
-MESSAGE_DATA            = [['COMMAND', 'ARGUMENTS', 'ACTION'],
+MESSAGE_DATA            = [['C O M M A N D', 'A R G U M E N T S', 'A C T I O N'],
                            ['add', '[name][phone(1)][phone(2)]...[phone(N)]',
                            'create / add contact with phone numbers'],
                            ['change', '[name][old_phone][new_phone]',
-                           "change replace contact's old phone number wuth new phone numbers"],
+                           "change contact's old phone number wuth new phone numbers"],
                            ['delete', '[name][phone(1)][phone(2)]...[phone(N)]',
                            "delete contact's phone number"],
                            ['name', '[phone_number]', 'search contact by[phone_number]'],
@@ -22,9 +22,10 @@ MESSAGE_DATA            = [['COMMAND', 'ARGUMENTS', 'ACTION'],
                            ['contact delete', '[name]',
                            'delete contact with [name]from adressbook'],
                            ['birthday','[name]',"display contact's birthday"],
-                           ['set birthday','[name] [date]',"change contact's birthday"],
+                           ['set birthday','[name] [date]',"change/set contact's birthday"],
                            ['cls', '', 'clear console'],
                            ['exit,close,good by', '', 'exit']]
+
 
 
 class Field:
