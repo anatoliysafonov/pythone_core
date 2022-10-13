@@ -97,19 +97,11 @@ def hello() -> str:
     return '-- How can I help you? --'
 
 
-# def show_all() -> str:
-#     """ prints all entries in the phone book """
-#     if not PHONEBOOK.data: 
-#         return data.PHONEBOOK_IS_EMPTY
-#     print('-'*84)
-#     print('|{:^20}|{:^50}|{:^10}|'.format('NAME', 'PHONES', 'BIRTHDAY'))
-#     print('-'*84)
-#     for contact in PHONEBOOK.data.values():
-#         print(contact)
-#         print('-'*84)
-#     print(f'total contacts : {PHONEBOOK.total_records}')
-
 def show_all ():
+    """
+    Виводить в консоль усі записи в телефонній книзі
+    Якщо книга велика, інформація виводиться меньшими порціями
+    """
     if not PHONEBOOK.data: 
         return data.PHONEBOOK_IS_EMPTY
     size = number_rows = len(PHONEBOOK)
@@ -118,7 +110,7 @@ def show_all ():
             try:
                 number_rows = int(input('PhobeBook is too large. Enter number of rows to display: '))
             except ValueError:
-                print('Please enter a number. Try again')
+                print(data.NUMBER_NOT_FOUND)
             else:
                 if number_rows > len(PHONEBOOK):
                     continue
