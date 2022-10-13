@@ -47,7 +47,7 @@ class Phone(Field):
     @value.setter
     def value(self, new_value:str) -> None:
         normalize_new_value = re.sub(r'\(|\)|\.|,|-', '',new_value)
-        if not normalize_new_value.isdigit() or len(normalize_new_value) > 10:
+        if not normalize_new_value.isdigit() or len(normalize_new_value) != 10:
             raise ValueError('-- ❗ Phone number is invalid. Number cant containts "(", ")", "-", and have 10 digit\'s length--')
         self.__value = normalize_new_value
 
@@ -99,12 +99,10 @@ class Record:
     def __init__(self, name: str, phone:str, birthday:str = None) -> None:
         if not name: raise ValueError(CONTACT_NOT_FOUND)
         self.name = Name(name)
-
         self.phones = [Phone(phone)]
-
         if birthday:
-                self.birthday = Birthday(birthday)
-        else: 
+            self.birthday = Birthday(birthday)
+        else:
             self.birthday = None
 
 
@@ -204,7 +202,7 @@ class Record:
             birthday = self.birthday.value 
         else:
             birthday = '--'
-        return '|{:^20}|{:^50}|{:^10}|'.format(name, phones, birthday)
+        return '|{:^20}|{:^50}|{:^17}|'.format(name, phones, birthday)
 
 
 class AdressBook(UserDict):

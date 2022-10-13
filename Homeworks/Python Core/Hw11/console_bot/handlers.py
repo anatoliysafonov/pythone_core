@@ -6,8 +6,8 @@ import data
 PHONEBOOK = data.AdressBook()
 NEW_LINE = '\n'
 SEPARATOR = ', '
-LINE = '-'*84
-HEADER = '{}|{:^20}|{:^50}|{:^10}|{}'.format(LINE+'\n','NAME', 'PHONES', 'BIRTHDAY','\n'+LINE)
+LINE = '+'+'-'*20+'+'+'-'*50+'+'+'-'*17+"+"
+HEADER = '{}|{:^20}|{:^50}|{:^17}|{}'.format(LINE+'\n','N A M E', 'P H O N E S', 'B I R T H D A Y','\n'+LINE)
 
 
 
@@ -102,10 +102,11 @@ def show_all ():
     Виводить в консоль усі записи в телефонній книзі
     Якщо книга велика, інформація виводиться меньшими порціями
     """
+    MAX_SIZE = 5
     if not PHONEBOOK.data: 
         return data.PHONEBOOK_IS_EMPTY
     size = number_rows = len(PHONEBOOK)
-    if number_rows > 5:
+    if number_rows > MAX_SIZE:
         while True:
             try:
                 number_rows = int(input('PhobeBook is too large. Enter number of rows to display: '))
@@ -185,7 +186,7 @@ def days_to_birthday(*args):
     if name not in PHONEBOOK:
         raise ValueError(data.CONTACT_NOT_FOUND)
     
-    print( PHONEBOOK[name].days_to_birthday()  )
+    print('To next birthday(days): {}'.format(PHONEBOOK[name].days_to_birthday()))
     
 
 
