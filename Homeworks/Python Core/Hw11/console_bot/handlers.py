@@ -125,7 +125,7 @@ def show_all ():
                 print('PHONEBOOK ➜ {} records'.format(len(PHONEBOOK)))
                 number_rows = int(input('PhobeBook is too large. Enter number of rows to output: '))
             except ValueError:    
-                print(data.NUMBER_NOT_FOUND)
+                print('Must be a number!!!')
             else:
                 if number_rows > len(PHONEBOOK):
                     continue
@@ -161,7 +161,7 @@ def out_help():
         data.MESSAGE_DATA[0][0], data.MESSAGE_DATA[0][1], data.MESSAGE_DATA[0][2]))
     print('{:-^130}'.format(''))
     for i in range(1, len(data.MESSAGE_DATA)):
-        string = '{:·<20} ➜ {:·^39} ➜ {:·<65}'.format(
+        string = '{:·<20} ➜ {:·^40} ➜ {:·<60}'.format(
             data.MESSAGE_DATA[i][0], data.MESSAGE_DATA[i][1], data.MESSAGE_DATA[i][2])
         print(string)
     print(NEW_LINE)

@@ -16,15 +16,16 @@ MESSAGE_DATA            = [['C O M M A N D', 'A R G U M E N T S', 'A C T I O N']
                            "change contact's old phone number wuth new phone numbers"],
                            ['delete', '[name][phone(1)][phone(2)]...[phone(N)]',
                            "delete contact's phone number"],
-                           ['name', '[phone_number]', 'search contact by[phone_number]'],
+                           ['name', '[phone_number] or [date of birth]', 'search contact by[phone_number] or by [date of birth]'],
                            ['phone', '[name]', "search phone number by contact's[name]"],
                            ['show all', '', 'display all contact in adressbook'],
                            ['contact delete', '[name]',
                            'delete contact with [name]from adressbook'],
                            ['birthday','[name]',"display contact's birthday"],
                            ['set birthday','[name] [date]',"change/set contact's birthday"],
+                           ['days', '[name]',"print out days to the next contact's birthdate"],
                            ['cls', '', 'clear console'],
-                           ['exit,close,good by', '', 'exit']]
+                           ['exit,close,good by', '', 'exit script']]
 
 
 
