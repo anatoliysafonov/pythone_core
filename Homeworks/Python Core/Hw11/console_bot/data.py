@@ -47,7 +47,7 @@ class Phone(Field):
     @value.setter
     def value(self, new_value:str) -> None:
         normalize_new_value = re.sub(r'\(|\)|\.|,|-', '',new_value)
-        if not normalize_new_value.isdigit() or len(normalize_new_value) != 10:
+        if not normalize_new_value.isdigit() or len(normalize_new_value) > 10:
             raise ValueError('-- ❗ Phone number is invalid. Number cant containts "(", ")", "-", and have 10 digit\'s length--')
         self.__value = normalize_new_value
 
@@ -248,8 +248,13 @@ class AdressBook(UserDict):
         return AdressBook.total_records
 
 
-    def iterator(num):
-        pass
+    def iterator(self, num):
+        count = AdressBook.total_records // num
+        count = count if AdressBook.total_records % num == 0 else count + 1
+        list_of_keys = list(self)
+        for i in range(count):
+            yield list_of_keys[i*num: i*num + num]
+
 
 
 

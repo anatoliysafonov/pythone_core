@@ -12,7 +12,6 @@ def main():
 
         command_line = input(INPUT)
         func, arguments = parse_string(command_line)
-
         if not func:
             print(COMMAND_NOT_FOUND)
             continue

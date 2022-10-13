@@ -6,6 +6,9 @@ import data
 PHONEBOOK = data.AdressBook()
 NEW_LINE = '\n'
 SEPARATOR = ', '
+LINE = '-'*84
+HEADER = '{}|{:^20}|{:^50}|{:^10}|{}'.format(LINE+'\n','NAME', 'PHONES', 'BIRTHDAY','\n'+LINE)
+
 
 
 @input_error
@@ -53,7 +56,10 @@ def contact_delete(*args):
 
     if not args: raise ValueError(data.ENTER_NAME_NUMBER)
     user_name, *_ = args
-    return PHONEBOOK.del_record(user_name)
+    result =  PHONEBOOK.del_record(user_name)
+    data.AdressBook.total_records -= 1
+    return result
+
 
 
 
@@ -91,17 +97,44 @@ def hello() -> str:
     return '-- How can I help you? --'
 
 
-def show_all() -> str:
-    """ prints all entries in the phone book """
-    if not PHONEBOOK.data: 
-        return data.PHONEBOOK_IS_EMPTY
-    print('-'*84)
-    print('|{:^20}|{:^50}|{:^10}|'.format('NAME', 'PHONES', 'BIRTHDAY'))
-    print('-'*84)
-    for contact in PHONEBOOK.data.values():
-        print(contact)
-        print('-'*84)
-    print(f'total contacts : {PHONEBOOK.total_records}')
+# def show_all() -> str:
+#     """ prints all entries in the phone book """
+#     if not PHONEBOOK.data: 
+#         return data.PHONEBOOK_IS_EMPTY
+#     print('-'*84)
+#     print('|{:^20}|{:^50}|{:^10}|'.format('NAME', 'PHONES', 'BIRTHDAY'))
+#     print('-'*84)
+#     for contact in PHONEBOOK.data.values():
+#         print(contact)
+#         print('-'*84)
+#     print(f'total contacts : {PHONEBOOK.total_records}')
+
+def show_all ():
+    number_rows = len(PHONEBOOK)
+    if number_rows > 5:
+        while True:
+            try:
+                number_rows = int(input('PhobeBook is too large. Enter number of rows to display: '))
+            except ValueError:
+                print('Please enter a number. Try again')
+            else:
+                if number_rows > len(PHONEBOOK):
+                    continue
+                break
+    list_of_keys = list(PHONEBOOK)
+    rene = PHONEBOOK.iterator(number_rows)
+    for records in rene:
+        print(HEADER)
+        for record in records:
+            current_record = PHONEBOOK[record]
+            print(current_record)
+            print(LINE)
+        start_index = list_of_keys.index(records[0]) +1
+        stop_index  = list_of_keys.index(records[-1])+1
+        print('{}..{} from {} records'.format(start_index, stop_index, len(PHONEBOOK)))
+        char = input('press "C/c" to escape or any key to continue : ')
+        if char == 'c' or char == "C":
+            break
 
 
 def stop() -> str:
@@ -180,7 +213,8 @@ FUNCTIONS = {
     'cls': console_clear,
     'birthday': show_birthday,
     'set birthday': set_birthday,
-    'days':days_to_birthday
+    'days':days_to_birthday,
+    #'show count':show
 }
 
 
@@ -198,4 +232,5 @@ def parse_string(command: str) -> tuple:
                 arguments = arguments[first_space:]
             func = FUNCTIONS[comm]
             arguments = arguments.strip().split()
+            break
     return func, arguments
