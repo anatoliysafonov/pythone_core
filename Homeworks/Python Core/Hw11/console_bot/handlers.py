@@ -114,7 +114,7 @@ def show_all (*args):
     Виводить в консоль усі записи в телефонній книзі
     Якщо книга велика, інформація виводиться меньшими порціями
     """
-    MAX_SIZE = 5
+    MAX_SIZE = 3
     message_out = HEADER
     if not PHONEBOOK.data: 
         return data.PHONEBOOK_IS_EMPTY
@@ -127,17 +127,18 @@ def show_all (*args):
     for records in generator:
         for record in records:
             current_record = PHONEBOOK[record]
-            message_out += NEW_LINE + str(current_record) + NEW_LINE + LINE
-        print(message_out)
-        message_out = HEADER
+            message_out += NEW_LINE + str(current_record) + NEW_LINE + LINE 
         start_index = list_of_keys.index(records[0]) +1
         stop_index  = list_of_keys.index(records[-1])+1
-        print('◀ {}..{} ▶ from {} records'.format(start_index, stop_index, len(PHONEBOOK)))
+        footer = '◀ {}..{} ▶ from {} records'.format(start_index, stop_index, len(PHONEBOOK))
+        message_out += NEW_LINE + footer
+        print(message_out)
         if stop_index == len(PHONEBOOK):
             break
         char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
             break
+        message_out = HEADER
     return "... Done ..."
 
 
