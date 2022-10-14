@@ -1,5 +1,4 @@
 from decorator import input_error
-from os import system as _system
 import data
 import re
 
@@ -12,11 +11,11 @@ HEADER = '{}|{:^20}|{:^50}|{:^17}|{}'.format(LINE+'\n','N A M E', 'P H O N E S',
 
 def is_date(date):
     resault = re.search(r'^\d{2}/\d{2}/\d{4}$', str(date))
-    return resault != None
+    return resault is not None
 
 def is_phone(phone):
     result = re.search(r'^\d{10}$', phone)
-    return result != None
+    return result is not None
 
 
 @input_error
@@ -105,43 +104,36 @@ def phone(*args) -> str:
 
 
 
-def hello() -> str:
+def hello(*args) -> str:
     """ print some text """
     return '-- How can I help you? --'
 
 
-def show_all ():
+def show_all (*args):
     """
     Виводить в консоль усі записи в телефонній книзі
     Якщо книга велика, інформація виводиться меньшими порціями
     """
     MAX_SIZE = 5
+    message_out = HEADER
     if not PHONEBOOK.data: 
         return data.PHONEBOOK_IS_EMPTY
-    size = number_rows = len(PHONEBOOK)
+    number_rows = len(PHONEBOOK)
+
     if number_rows > MAX_SIZE:
-        while True:
-            try:
-                print('PHONEBOOK ➜ {} records'.format(len(PHONEBOOK)))
-                number_rows = int(input('PhobeBook is too large. Enter number of rows to output: '))
-            except ValueError:    
-                print('Must be a number!!!')
-            else:
-                if number_rows > len(PHONEBOOK):
-                    continue
-                break
+        number_rows = MAX_SIZE
     list_of_keys = list(PHONEBOOK)
-    rene = PHONEBOOK.iterator(number_rows)
-    for records in rene:
-        print(HEADER)
+    generator = PHONEBOOK.iterator(number_rows)
+    for records in generator:
         for record in records:
             current_record = PHONEBOOK[record]
-            print(current_record)
-            print(LINE)
+            message_out += NEW_LINE + str(current_record) + NEW_LINE + LINE
+        print(message_out)
+        message_out = HEADER
         start_index = list_of_keys.index(records[0]) +1
         stop_index  = list_of_keys.index(records[-1])+1
         print('◀ {}..{} ▶ from {} records'.format(start_index, stop_index, len(PHONEBOOK)))
-        if stop_index == size:
+        if stop_index == len(PHONEBOOK):
             break
         char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
@@ -149,22 +141,21 @@ def show_all ():
     return "... Done ..."
 
 
-def stop() -> str:
+def stop(*args) -> str:
     """ exit script """
     return '-- Good by! --'
 
 
-def out_help():
+def out_help(*args):
     """ Print out the help message """
-    print(NEW_LINE)
-    print('{:^20}{:^39}{:^62}'.format(
-        data.MESSAGE_DATA[0][0], data.MESSAGE_DATA[0][1], data.MESSAGE_DATA[0][2]))
-    print('{:-^130}'.format(''))
+    message_out = ''
+    hearder = '{}{:^20}{:^39}{:^62}{}'.format(NEW_LINE, data.MESSAGE_DATA[0][0],data.MESSAGE_DATA[0][1],data.MESSAGE_DATA[0][2],NEW_LINE)
+    line = '-'*126 + NEW_LINE
+    message_out = hearder + line
     for i in range(1, len(data.MESSAGE_DATA)):
-        string = '{:·<20} ➜ {:·^40} ➜ {:·<60}'.format(
-            data.MESSAGE_DATA[i][0], data.MESSAGE_DATA[i][1], data.MESSAGE_DATA[i][2])
-        print(string)
-    print(NEW_LINE)
+        string = '{:·<20} ➜ {:·^40} ➜ {:·<60}{}'.format(data.MESSAGE_DATA[i][0],data.MESSAGE_DATA[i][1],data.MESSAGE_DATA[i][2],NEW_LINE)
+        message_out += string
+    return message_out
 
 
 
@@ -198,15 +189,14 @@ def days_to_birthday(*args):
         raise ValueError(data.CONTACT_NOT_FOUND)
     name, *_ = args
     if name not in PHONEBOOK:
-        raise ValueError(data.CONTACT_NOT_FOUND)
-    
-    print('To next birthday(days): {}'.format(PHONEBOOK[name].days_to_birthday()))
+        raise ValueError(data.CONTACT_NOT_FOUND)  
+    return 'To next birthday(days):{}'.format(PHONEBOOK[name].days_to_birthday())
     
 
 
 def console_clear(*args):
     """ clear consol """
-    _system('clear')
+    data.start_message()
 
 
 FUNCTIONS = {
@@ -226,7 +216,6 @@ FUNCTIONS = {
     'birthday': show_birthday,
     'set birthday': set_birthday,
     'days':days_to_birthday,
-    #'show count':show
 }
 
 

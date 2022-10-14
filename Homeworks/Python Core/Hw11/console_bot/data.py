@@ -1,8 +1,12 @@
 from collections import UserDict
 from datetime import datetime
+from os import system as _system
 import re
 
-
+COMMAND_NOT_FOUND       = "❗ command not valid ❗"
+EXIT                    = "-- Good by! --"
+INPUT                   = 'Input command ▶ : '
+START_MESSAGE           = '👋 Hi. Type "help" for some help. Be sure that terminal has enoght width length'
 SEPARATOR               = ', '
 CONTACT_NOT_FOUND       = '-- ❗ Contact not found --'
 NUMBER_NOT_FOUND        = '-- ❗ Number not found --'
@@ -28,30 +32,43 @@ MESSAGE_DATA            = [['C O M M A N D', 'A R G U M E N T S', 'A C T I O N']
                            ['exit,close,good by', '', 'exit script']]
 
 
+TITLE = """
+████████████████████████████████████
+█─▄▄▄─█▄─▄███▄─▄███▄─▄─▀█─▄▄─█─▄─▄─█
+█─███▀██─██▀██─█████─▄─▀█─██─███─███
+▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▀▀▀▄▄▄▄▀▀▄▄▄▄▀▀▄▄▄▀▀
+"""
+def start_message():
+    _system('clear')
+    print(TITLE)
+    print(START_MESSAGE)
+
 
 class Field:
     """ class Field """
-    pass
+    def __init__(self, value):
+        self._value = None
+        self.value = value
+
+    @property
+    def value (self) ->None:
+        return self._value
+
+    @value.setter
+    def value(self, new_value:str) ->str:
+        pass
 
 
 
 class Phone(Field):
     """ class Phone """
 
-    def __init__(self, value: str) -> None:
-        self.__value = None
-        self.value = value
-
-    @property
-    def value(self) ->str:
-        return self.__value
-
-    @value.setter
+    @Field.value.setter
     def value(self, new_value:str) -> None:
         normalize_new_value = re.sub(r'\(|\)|\.|,|-', '',new_value)
         if not normalize_new_value.isdigit() or len(normalize_new_value) != 10:
             raise ValueError('-- ❗ Phone number is invalid. Number cant containts "(", ")", "-", and have 10 digit\'s length--')
-        self.__value = normalize_new_value
+        self._value = normalize_new_value
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, type(self)):
@@ -62,37 +79,23 @@ class Phone(Field):
 class Name (Field):
     """ class Name """
 
-    def __init__(self, value) -> None:  
-        self.__value = None
-        self.value = value
-
-    @property
-    def value(self) ->str:
-        return self.__value
-
-    @value.setter
+    @Field.value.setter
     def value(self, new_value:str) -> None:
         if new_value[0].isdigit() or len(new_value) > 10:
             raise ValueError('-- ❗ Name format is invalid. Name must starts with letter and lenght must be less or equal 10 --')
-        self.__value = new_value
+        self._value = new_value
 
 
 class Birthday(Field):
-    def __init__(self, value:str) ->None:
-        self.__value = None
-        self.value = value
 
-    @property
-    def value(self) -> str:
-        return self.__value
 
-    @value.setter
+    @Field.value.setter
     def value (self, new_value) -> None:
         try:
             datetime.strptime(new_value, '%d/%m/%Y')
         except ValueError:
             raise ValueError("-- ❗ Incorrect data format, should be DD/MM/YYYY --")
-        self.__value = new_value
+        self._value = new_value
 
 
 

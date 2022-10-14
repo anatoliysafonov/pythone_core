@@ -1,19 +1,16 @@
+from re import T
 from handlers import parse_string
+import data
 
-COMMAND_NOT_FOUND = "❗ command not valid ❗"
-EXIT              = "-- Good by! --"
-INPUT             = 'Input command ▶ : '
-START_MESSAGE     = '\n👋 Hi. Type "help" for some help. Be sure that terminal has enoght width length'
 
 
 def main():
-    print(START_MESSAGE)
+    data.start_message()
     while True:
-
-        command_line = input(INPUT)
+        command_line = input(data.INPUT)
         func, arguments = parse_string(command_line)
         if not func:
-            print(COMMAND_NOT_FOUND)
+            print(data.COMMAND_NOT_FOUND)
             continue
 
         if not arguments: text = func()
@@ -22,7 +19,7 @@ def main():
         if text:
             print(text)
 
-        if text == EXIT:
+        if text == data.EXIT:
             break
 
 
