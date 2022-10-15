@@ -1,4 +1,5 @@
 from handlers import parse_string
+from warnings import INPUT, COMMAND_NOT_FOUND, EXIT
 import data
 
 
@@ -6,10 +7,10 @@ import data
 def main():
     data.start_message()
     while True:
-        command_line = input(data.INPUT)
+        command_line = input(INPUT)
         func, arguments = parse_string(command_line)
         if not func:
-            print(data.COMMAND_NOT_FOUND)
+            print(COMMAND_NOT_FOUND)
             continue
 
         if not arguments: text = func()
@@ -18,7 +19,7 @@ def main():
         if text:
             print(text)
 
-        if text == data.EXIT:
+        if text == EXIT:
             break
 
 

@@ -1,6 +1,9 @@
 from decorator import input_error
+from os import system as _system
+import warnings
 import data
 import re
+
 
 
 PHONEBOOK = data.AdressBook()
@@ -42,10 +45,11 @@ def footer_build(start:int, end:int, page:int,total:int)->str:
 def add(*args ) -> str:
     """  Adds a new entry to the phonebook """
 
-    if not args     : raise IndexError(data.ENTER_NAME_NUMBER)
-    if len(args) < 2: raise IndexError(data.NUMBER_NOT_FOUND)
-
+    if not args     : raise IndexError(warnings.ENTER_NAME_USER)
+    if len(args) < 2: raise IndexError(warnings.ENTER_PHONE_NUMBER)
+    if len(args) > 3: raise IndexError(warnings.TOO_MUCH_ARGS)
     user_name, number, *birthday = args
+
     record = data.Record(user_name, number, *birthday)
     return PHONEBOOK.add_record(record)
 
@@ -55,12 +59,12 @@ def add(*args ) -> str:
 def change(*args) -> str:
     """ Changes the phone number of an existing entry in the phone book """
     
-    if not args or len(args) < 3: raise IndexError(data.NAME_NUMBER_NOT_CORRECT)
+    if not args or len(args) < 3: raise IndexError(warnings.NAME_NUMBER_NOT_CORRECT)
     user_name, old_number, new_number, *_ = args
     try:
         record = PHONEBOOK.data[user_name]
     except KeyError:
-        raise KeyError(data.CONTACT_NOT_FOUND)
+        raise KeyError(warnings.CONTACT_NOT_FOUND)
     else:
         return record.change_number(user_name, old_number, new_number)
 
@@ -70,7 +74,7 @@ def change(*args) -> str:
 def delete(*args) -> str:
     """ Delete the phone number of an existing entry in the phone book """
 
-    if not args or len(args) < 2: raise IndexError(data.ENTER_NAME_NUMBER)
+    if not args or len(args) < 2: raise IndexError(warnings.ENTER_NAME_NUMBER)
     user_name, number, *_ = args
     record = PHONEBOOK.data[user_name]
     return record.delete_number(number)
@@ -81,7 +85,7 @@ def delete(*args) -> str:
 def contact_delete(*args):
     """ Delete entire record from phonebook """
 
-    if not args: raise ValueError(data.ENTER_NAME_NUMBER)
+    if not args: raise ValueError(warnings.ENTER_NAME_NUMBER)
     user_name, *_ = args
     result =  PHONEBOOK.del_record(user_name)
     data.AdressBook.total_records -= 1
@@ -94,23 +98,23 @@ def contact_delete(*args):
 def name(*args) -> str:
     """ Searches for a record by phone number or by date of birth. Return name of contact : numbers """
 
-    if not args: raise IndexError(data.NUMBER_NOT_FOUND)
-    return_message = data.CONTACT_NOT_FOUND
+    if not args: raise IndexError(warnings.NUMBER_NOT_FOUND)
+    return_message = warnings.CONTACT_NOT_FOUND
     string, *_ = args
+    records = []
     if is_phone(string):
-        records = []
         for name, record in PHONEBOOK.data.items():
             phones = [item.value for item in record.phones]
             if string in phones:
                 records.append(name)
-        return_message = table_build(records)
         
     if is_date(string):
-        records = []
         for record in PHONEBOOK.values():
             if string == record.birthday.value:
                 records.append(record.name.value)
-        return_message = table_build(records)
+
+    if not records: raise ValueError (warnings.CONTACT_NOT_FOUND)
+    return_message = table_build(records)
     return return_message
 
 
@@ -119,9 +123,9 @@ def name(*args) -> str:
 def phone(*args) -> str:
     """ Searches for a record by name and return  name : numbers """
 
-    if not args: raise IndexError('-- Enter a name  to search --')
+    if not args: raise ValueError(warnings.ENTER_USER_NAME)
     user_name, *_ = args
-    if user_name not in PHONEBOOK.data: raise KeyError(data.CONTACT_NOT_FOUND)
+    if user_name not in PHONEBOOK.data: raise KeyError(warnings.CONTACT_NOT_FOUND)
     message_out = table_build([user_name])
     return message_out
 
@@ -139,7 +143,7 @@ def show_all (*args):
     """
     MAX_SIZE = 3
     total_records = len(PHONEBOOK)
-    list_of_keys = list(PHONEBOOK)
+    keys = list(PHONEBOOK)
     pages = total_records // MAX_SIZE
     pages = pages if total_records % MAX_SIZE == 0 else pages + 1
 
@@ -152,8 +156,8 @@ def show_all (*args):
     current_page = 0
     for records in generator:
         current_page += 1
-        start_index = list_of_keys.index(records[0]) +1
-        stop_index  = list_of_keys.index(records[-1])+1
+        start_index = keys.index(records[0]) +1
+        stop_index  = keys.index(records[-1])+1
         table_string  = table_build(records)
         table_string += footer_build(start_index, stop_index,current_page, pages)
         print(table_string)
@@ -162,23 +166,16 @@ def show_all (*args):
         char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
             break
-    return NEW_LINE
+    return None
 
 
 def stop(*args) -> str:
     """ exit script """
     return '-- Good by! --'
 
-
+@input_error
 def out_help(*args):
-    """ Print out the help message """
-    message_out = ''
-    hearder = '{}{:^20}{:^39}{:^62}{}'.format(NEW_LINE, data.MESSAGE_DATA[0][0],data.MESSAGE_DATA[0][1],data.MESSAGE_DATA[0][2],NEW_LINE)
-    line = '-'*126 + NEW_LINE
-    message_out = hearder + line
-    for i in range(1, len(data.MESSAGE_DATA)):
-        string = '{:·<20} ➜ {:·^40} ➜ {:·<60}{}'.format(data.MESSAGE_DATA[i][0],data.MESSAGE_DATA[i][1],data.MESSAGE_DATA[i][2],NEW_LINE)
-        message_out += string
+    raise ValueError('Inder constructtion')
     return message_out
 
 
@@ -190,24 +187,24 @@ def set_birthday(*args):
     if name in PHONEBOOK.data:
         PHONEBOOK.data[name].set_birthday(date)
     else:
-        return data.CONTACT_NOT_FOUND 
-    return "... Done ..."
+        return warnings.CONTACT_NOT_FOUND
 
 
 @input_error
 def days_to_birthday(*args):
     if not args:
-        raise ValueError(data.CONTACT_NOT_FOUND)
+        raise ValueError(warnings.CONTACT_NOT_FOUND)
     name, *_ = args
     if name not in PHONEBOOK:
-        raise ValueError(data.CONTACT_NOT_FOUND)  
+        raise ValueError(warnings.CONTACT_NOT_FOUND)  
     return 'To next birthday(days):{}'.format(PHONEBOOK[name].days_to_birthday())
     
 
 
 def console_clear(*args):
     """ clear consol """
-    data.start_message()
+    _system('clear')
+    
 
 
 FUNCTIONS = {

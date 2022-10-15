@@ -1,51 +1,14 @@
 from collections import UserDict
 from datetime import datetime
 from os import system as _system
+import warnings
 import re
 
-COMMAND_NOT_FOUND       = "❗ command not valid ❗"
-EXIT                    = "-- Good by! --"
-INPUT                   = 'Input command ▶ : '
-START_MESSAGE           = '👋 Hi. Type "help" for some help. Be sure that terminal has enoght width length'
-SEPARATOR               = ', '
-CONTACT_NOT_FOUND       = '-- ❗ Contact not found --'
-NUMBER_NOT_FOUND        = '-- ❗ Number not found --'
-PHONEBOOK_IS_EMPTY      = '-- ❗ PhoneBook is empty. Add some contact --'
-NAME_NUMBER_NOT_CORRECT = '-- ❗ The name and the phone number are not correct --'
-ENTER_NAME_NUMBER       = "-- ❗ Enter the user's name and phone --"
-MESSAGE_DATA            = [['C O M M A N D', 'A R G U M E N T S', 'A C T I O N'],
-                           ['add', '[name][phone(1)][phone(2)]...[phone(N)]',
-                           'create / add contact with phone numbers'],
-                           ['change', '[name][old_phone][new_phone]',
-                           "change contact's old phone number wuth new phone numbers"],
-                           ['delete', '[name][phone(1)][phone(2)]...[phone(N)]',
-                           "delete contact's phone number"],
-                           ['name', '[phone_number] or [date of birth]', 'search contact by[phone_number] or by [date of birth]'],
-                           ['phone', '[name]', "search phone number by contact's[name]"],
-                           ['show all', '', 'display all contact in adressbook'],
-                           ['contact delete', '[name]',
-                           'delete contact with [name]from adressbook'],
-                           ['birthday','[name]',"display contact's birthday"],
-                           ['set birthday','[name] [date]',"change/set contact's birthday"],
-                           ['days', '[name]',"print out days to the next contact's birthdate"],
-                           ['cls', '', 'clear console'],
-                           ['exit,close,good by', '', 'exit script']]
 
-
-TITLE = """
- ######   #     #  #######  #     #  #######  ######   #######  #######  #    # 
- #     #  #     #  #     #  ##    #  #        #     #  #     #  #     #  #   #  
- #     #  #     #  #     #  # #   #  #        #     #  #     #  #     #  #  #   
- ######   #######  #     #  #  #  #  #####    ######   #     #  #     #  ###    
- #        #     #  #     #  #   # #  #        #     #  #     #  #     #  #  #   
- #        #     #  #     #  #    ##  #        #     #  #     #  #     #  #   #  
- #        #     #  #######  #     #  #######  ######   #######  #######  #    # 
-                                                                                
-"""
 def start_message():
     _system('clear')
-    print(TITLE)
-    print(START_MESSAGE)
+    print(warnings.LOGO)
+    print(warnings.START_MESSAGE)
 
 
 class Field:
@@ -106,7 +69,6 @@ class Birthday(Field):
 class Record:
     """ class Record  """
     def __init__(self, name: str, phone:str, birthday:str = None) -> None:
-        if not name: raise ValueError(CONTACT_NOT_FOUND)
         self.name = Name(name)
         self.phones = [Phone(phone)]
         if birthday:
@@ -121,7 +83,8 @@ class Record:
         if number not in self.phones:
             self.phones.append(number)
         else:
-            return (f'-- ❗ Phone number {number.value} exists already --')
+            #return (f'-- ❗ Phone number {number.value} exists already --')
+            raise ValueError ('-- ❗ Phone number {number.value} exists already --')
         return '... Done ...'
 
 
@@ -135,7 +98,7 @@ class Record:
             index = self.phones.index(old_number)
             self.phones[index] = new_number
             is_founded = True
-        if not is_founded: raise ValueError(NUMBER_NOT_FOUND)
+        if not is_founded: raise ValueError(warnings.NUMBER_NOT_FOUND)
         return '... Changed ...'
         
 
@@ -144,7 +107,7 @@ class Record:
     def out_info(self) -> str:
         """ Повертає інформацію про всі номера данного запису """
         numbers = [item.value for item in self.phones]
-        numbers = SEPARATOR.join(numbers)
+        numbers = warnings.SEPARATOR.join(numbers)
         return f'{self.name.value} : {numbers}'
 
 
@@ -173,8 +136,7 @@ class Record:
         if self.birthday:
             self.birthday.value = date
         else:
-            self.birthday = Birthday(date)
-        
+            self.birthday = Birthday(date)        
     def days_to_birthday (self) -> int:
         """
         Повертає кількість днів до дня нарожддення
@@ -185,7 +147,6 @@ class Record:
         now = datetime.now()
         birthday_this_year = datetime(day=int(day), month=int(mouth), year=int(now.year))
         return (birthday_this_year - now).days
-
 
     def delete_number(self, number: str) -> str:
         """
@@ -199,14 +160,14 @@ class Record:
                 is_deleted = True
         if is_deleted:
             return '... Deleted ...'
-        raise ValueError(NUMBER_NOT_FOUND)
+        raise ValueError(warnings.NUMBER_NOT_FOUND)
     
     def __str__(self) ->str:
         """
         повертає в строковій формі інформацію про запис
         """
         name = self.name.value
-        phones = SEPARATOR.join([phone.value for phone in self.phones])
+        phones = warnings.SEPARATOR.join([phone.value for phone in self.phones])
         if self.birthday:
             birthday = self.birthday.value 
         else:
@@ -245,9 +206,9 @@ class AdressBook(UserDict):
         try:
             self.pop(name)
         except KeyError:
-            return (CONTACT_NOT_FOUND)
+            return (warnings.CONTACT_NOT_FOUND)
         else:
-            print(f'... contact {name} deleted ...')
+            return warnings.CONTACT_DELETED
 
 
     def __len__(self):
@@ -260,7 +221,6 @@ class AdressBook(UserDict):
         list_of_keys = list(self)
         for i in range(pages):
             yield list_of_keys[i*num: i*num + num]
-
 
 
 
