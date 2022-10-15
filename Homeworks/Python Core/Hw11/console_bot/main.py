@@ -1,4 +1,3 @@
-from re import T
 from handlers import parse_string
 import data
 

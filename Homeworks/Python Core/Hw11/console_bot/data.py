@@ -33,10 +33,14 @@ MESSAGE_DATA            = [['C O M M A N D', 'A R G U M E N T S', 'A C T I O N']
 
 
 TITLE = """
-████████████████████████████████████
-█─▄▄▄─█▄─▄███▄─▄███▄─▄─▀█─▄▄─█─▄─▄─█
-█─███▀██─██▀██─█████─▄─▀█─██─███─███
-▀▄▄▄▄▄▀▄▄▄▄▄▀▄▄▄▀▀▀▄▄▄▄▀▀▄▄▄▄▀▀▄▄▄▀▀
+ ######   #     #  #######  #     #  #######  ######   #######  #######  #    # 
+ #     #  #     #  #     #  ##    #  #        #     #  #     #  #     #  #   #  
+ #     #  #     #  #     #  # #   #  #        #     #  #     #  #     #  #  #   
+ ######   #######  #     #  #  #  #  #####    ######   #     #  #     #  ###    
+ #        #     #  #     #  #   # #  #        #     #  #     #  #     #  #  #   
+ #        #     #  #     #  #    ##  #        #     #  #     #  #     #  #   #  
+ #        #     #  #######  #     #  #######  ######   #######  #######  #    # 
+                                                                                
 """
 def start_message():
     _system('clear')
@@ -175,8 +179,8 @@ class Record:
         """
         Повертає кількість днів до дня нарожддення
         """
-        if not self.birthday.value:
-            raise ValueError('--❗ birthay is not set --')
+        if self.birthday is None:
+            raise ValueError('--❗ birthay is not set -- Try "set birthay" to set the date of birth')
         day, mouth, _ = self.birthday.value.split('/')
         now = datetime.now()
         birthday_this_year = datetime(day=int(day), month=int(mouth), year=int(now.year))
@@ -207,7 +211,7 @@ class Record:
             birthday = self.birthday.value 
         else:
             birthday = '--'
-        return '|{:^20}|{:^50}|{:^17}|'.format(name, phones, birthday)
+        return '|{:^20}|{:^50}|{:^20}|'.format(name, phones, birthday)
 
 
 class AdressBook(UserDict):
@@ -251,11 +255,10 @@ class AdressBook(UserDict):
         return AdressBook.total_records
 
 
-    def iterator(self, num):
-        count = AdressBook.total_records // num
-        count = count if AdressBook.total_records % num == 0 else count + 1
+    def iterator(self, num, pages):
+        
         list_of_keys = list(self)
-        for i in range(count):
+        for i in range(pages):
             yield list_of_keys[i*num: i*num + num]
 
 

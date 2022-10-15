@@ -6,8 +6,8 @@ import re
 PHONEBOOK = data.AdressBook()
 NEW_LINE = '\n'
 SEPARATOR = ', '
-LINE = '+'+'-'*20+'+'+'-'*50+'+'+'-'*17+"+"
-HEADER = '{}|{:^20}|{:^50}|{:^17}|{}'.format(LINE+'\n','N A M E', 'P H O N E S', 'B I R T H D A Y','\n'+LINE)
+LINE = '+'+'-'*20+'+'+'-'*50+'+'+'-'*20+"+"
+HEADER = '{}|{:^20}|{:^50}|{:^20}|{}'.format(LINE+'\n','N A M E', 'P H O N E S', 'B I R T H D A Y','\n'+LINE)
 
 def is_date(date):
     resault = re.search(r'^\d{2}/\d{2}/\d{4}$', str(date))
@@ -17,6 +17,26 @@ def is_phone(phone):
     result = re.search(r'^\d{10}$', phone)
     return result is not None
 
+def table_build (records:list) ->str:
+    string = HEADER
+    for record in records:
+        current_record = PHONEBOOK[record]
+        string += NEW_LINE + str(current_record) + NEW_LINE + LINE
+    return string
+
+
+def footer_build(start:int, end:int, page:int,total:int)->str:
+    if total == page:
+        right = ''
+    else:
+        right = 'page {} from {}'.format(page, total)
+    if start == end:
+        left = '{}th record'.format(end)
+    else:    
+        left = '1 ◀ {}..{} ▶ {} records'.format(start, end, len(PHONEBOOK))
+    
+    footer = '{} {:>15}'.format(left, right)
+    return NEW_LINE + footer
 
 @input_error
 def add(*args ) -> str:
@@ -78,16 +98,19 @@ def name(*args) -> str:
     return_message = data.CONTACT_NOT_FOUND
     string, *_ = args
     if is_phone(string):
+        records = []
         for name, record in PHONEBOOK.data.items():
             phones = [item.value for item in record.phones]
             if string in phones:
-                print (f'{name} : {SEPARATOR.join(phones)}')
-                return_message = '... Done ...'
+                records.append(name)
+        return_message = table_build(records)
+        
     if is_date(string):
+        records = []
         for record in PHONEBOOK.values():
             if string == record.birthday.value:
-                print (f'{record.name.value} : {string}')
-                return_message = '... Done ...'
+                records.append(record.name.value)
+        return_message = table_build(records)
     return return_message
 
 
@@ -99,8 +122,8 @@ def phone(*args) -> str:
     if not args: raise IndexError('-- Enter a name  to search --')
     user_name, *_ = args
     if user_name not in PHONEBOOK.data: raise KeyError(data.CONTACT_NOT_FOUND)
-    record = PHONEBOOK.data[user_name]
-    return record.out_info()
+    message_out = table_build([user_name])
+    return message_out
 
 
 
@@ -115,31 +138,31 @@ def show_all (*args):
     Якщо книга велика, інформація виводиться меньшими порціями
     """
     MAX_SIZE = 3
-    message_out = HEADER
+    total_records = len(PHONEBOOK)
+    list_of_keys = list(PHONEBOOK)
+    pages = total_records // MAX_SIZE
+    pages = pages if total_records % MAX_SIZE == 0 else pages + 1
+
     if not PHONEBOOK.data: 
         return data.PHONEBOOK_IS_EMPTY
-    number_rows = len(PHONEBOOK)
-
+    number_rows = total_records 
     if number_rows > MAX_SIZE:
         number_rows = MAX_SIZE
-    list_of_keys = list(PHONEBOOK)
-    generator = PHONEBOOK.iterator(number_rows)
+    generator = PHONEBOOK.iterator(number_rows, pages)
+    current_page = 0
     for records in generator:
-        for record in records:
-            current_record = PHONEBOOK[record]
-            message_out += NEW_LINE + str(current_record) + NEW_LINE + LINE 
+        current_page += 1
         start_index = list_of_keys.index(records[0]) +1
         stop_index  = list_of_keys.index(records[-1])+1
-        footer = '◀ {}..{} ▶ from {} records'.format(start_index, stop_index, len(PHONEBOOK))
-        message_out += NEW_LINE + footer
-        print(message_out)
-        if stop_index == len(PHONEBOOK):
+        table_string  = table_build(records)
+        table_string += footer_build(start_index, stop_index,current_page, pages)
+        print(table_string)
+        if stop_index == total_records:
             break
         char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
             break
-        message_out = HEADER
-    return "... Done ..."
+    return NEW_LINE
 
 
 def stop(*args) -> str:
@@ -157,19 +180,6 @@ def out_help(*args):
         string = '{:·<20} ➜ {:·^40} ➜ {:·<60}{}'.format(data.MESSAGE_DATA[i][0],data.MESSAGE_DATA[i][1],data.MESSAGE_DATA[i][2],NEW_LINE)
         message_out += string
     return message_out
-
-
-
-@input_error
-def show_birthday(*args):
-    if not args:
-        raise ValueError ('-- Input name show birthday -- ')
-    name , *_ = args
-    date = (PHONEBOOK.data[name].get_birthday())
-    if not date:
-        return '-- Birthday is not set. To set birthday select "set birthday" --'
-    else:
-        return '{} : {}'.format(name, date)
 
 
 @input_error
@@ -214,7 +224,7 @@ FUNCTIONS = {
     'good by': stop,
     'help': out_help,
     'cls': console_clear,
-    'birthday': show_birthday,
+    'birthday': phone,
     'set birthday': set_birthday,
     'days':days_to_birthday,
 }
