@@ -48,8 +48,9 @@ class Name (Field):
 
     @Field.value.setter
     def value(self, new_value:str) -> None:
-        if new_value[0].isdigit() or len(new_value) > 10:
-            raise ValueError('-- ❗ Name format is invalid. Name must starts with letter and lenght must be less or equal 10 --')
+        MAX_LENGTH = 10
+        if new_value[0].isdigit() or len(new_value) > MAX_LENGTH:
+            raise ValueError(warnings.INVALID_DATA)
         self._value = new_value
 
 
@@ -61,7 +62,7 @@ class Birthday(Field):
         try:
             datetime.strptime(new_value, '%d/%m/%Y')
         except ValueError:
-            raise ValueError("-- ❗ Incorrect data format, should be DD/MM/YYYY --")
+            raise ValueError(warnings.INVALID_DATA)
         self._value = new_value
 
 
@@ -71,96 +72,64 @@ class Record:
     def __init__(self, name: str, phone:str, birthday:str = None) -> None:
         self.name = Name(name)
         self.phones = [Phone(phone)]
+        self._birthday = None
         if birthday:
-            self.birthday = Birthday(birthday)
+            self.birthday = birthday
+
+    @property
+    def birthday(self)->str:
+        """Повертаємо дату народження i якщо її немає, то повертаємо None """
+        if self._birthday: 
+            return self._birthday
+        else: 
+            return None 
+        
+
+    @birthday.setter
+    def birthday(self, date:str) -> None:
+        """встановлюємо дату народження i якщо дата ще не встановлена, то ми добавляємо її в даний запис якщо дата є, то ми її міняємо """
+        date = Birthday(date)
+        if date:
+            self._birthday = date
         else:
-            self.birthday = None
+            self._birthday = None
+        return warnings.DONE
+
+    
 
 
-    def add_number(self, number) -> str:
+    def __add__(self, phone) -> str:
         """ добавляє новий номсер телефона якщо його немає в списку """
-        
-        if number not in self.phones:
-            self.phones.append(number)
-        else:
-            #return (f'-- ❗ Phone number {number.value} exists already --')
-            raise ValueError ('-- ❗ Phone number {number.value} exists already --')
-        return '... Done ...'
+        if phone in self.phones: raise ValueError(warnings.NUMBER_EXISTS)
+        self.phones.append(phone)
+        return warnings.DONE
 
+    def __sub__(self,phone):
+        if phone not in self.phones: raise ValueError(warnings.CONTANT_NOT_FOUND)
+        self.phones.remove(phone)
 
-
-    def change_number(self, name: str, old_number: str, new_number: str) -> str:
+    def change(self, name: str, old: str, new: str) -> str:
         """ міняє номер існуючого контакту з існуючим номером на новий номер """
-        old_number = Phone(old_number)
-        new_number = Phone(new_number)
-        is_founded = False
-        if old_number in self.phones:
-            index = self.phones.index(old_number)
-            self.phones[index] = new_number
-            is_founded = True
-        if not is_founded: raise ValueError(warnings.NUMBER_NOT_FOUND)
-        return '... Changed ...'
+        old = Phone(old)
+        new = Phone(new)
+        self - old
+        self + new
+        return warnings.DONE
         
 
-
-
-    def out_info(self) -> str:
-        """ Повертає інформацію про всі номера данного запису """
-        numbers = [item.value for item in self.phones]
-        numbers = warnings.SEPARATOR.join(numbers)
-        return f'{self.name.value} : {numbers}'
-
-
-    def get_numbers(self)->list:
-        """ повертає список обʼєктів Phone """
-        return self.phones
-
-
-    def get_birthday(self)->str:
-        """
-        повертаємо дату народження
-        якщо її немає, то повертаємо None
-        """
-        if self.birthday:
-            return self.birthday.value
-        else:
-            return self.birthday
-
-
-    def set_birthday(self, date:str) -> None:
-        """
-        встановлюємо дату народження
-        якщо дата ще не встановлена, то ми добавляємо її в даний запис
-        якщо дата є, то ми її міняємо 
-        """
-        if self.birthday:
-            self.birthday.value = date
-        else:
-            self.birthday = Birthday(date)        
-    def days_to_birthday (self) -> int:
-        """
-        Повертає кількість днів до дня нарожддення
-        """
-        if self.birthday is None:
-            raise ValueError('--❗ birthay is not set -- Try "set birthay" to set the date of birth')
+    def days(self) -> int:
+        """ Повертає кількість днів до дня нарожддення """
+        if self.birthday is None: raise ValueError(warnings.BIRTHDAY_NOT_SET)
         day, mouth, _ = self.birthday.value.split('/')
         now = datetime.now()
-        birthday_this_year = datetime(day=int(day), month=int(mouth), year=int(now.year))
-        return (birthday_this_year - now).days
+        this_year = datetime(day=int(day), month=int(mouth), year=int(now.year))
+        return (this_year - now).days
 
-    def delete_number(self, number: str) -> str:
-        """
-        Видаляємо новий телефона з контакту в телефонній книзі
-        """
-        is_deleted = False
-        number = Phone(number)
-        for phone in self.phones:
-            if number == phone:
-                self.phones.remove(phone)
-                is_deleted = True
-        if is_deleted:
-            return '... Deleted ...'
-        raise ValueError(warnings.NUMBER_NOT_FOUND)
+    def delete(self, phone: str) -> str:
+        """ Видаляємо новий телефона з контакту в телефонній книзі """
+        phone = Phone(phone)
+        self - phone
+        return '...Done...'
     
     def __str__(self) ->str:
         """
@@ -169,7 +138,7 @@ class Record:
         name = self.name.value
         phones = warnings.SEPARATOR.join([phone.value for phone in self.phones])
         if self.birthday:
-            birthday = self.birthday.value 
+            birthday = self.birthday.value
         else:
             birthday = '--'
         return '|{:^20}|{:^50}|{:^20}|'.format(name, phones, birthday)
@@ -181,25 +150,19 @@ class AdressBook(UserDict):
     """
     total_records = 0
 
-    def add_record(self, record: Record) -> str:
-        """ 
-        Додаємо нову запис чи додоткові телефони до телефонної книги
-        """
-        result = '... Done ...'
-        contact_name = record.name.value
-        if contact_name not in self:
-            #якщо в телефоній книзі немає контакн з іменем contact_name, то додаємо новий контакт
-            self.data[contact_name] = record
+    def __add__(self, record: Record) -> str:
+        """ Додаємо нову запис чи додоткові телефони до телефонної книги """
+        user = record.name.value
+        if user not in self:
+            self.data[user] = record
             AdressBook.total_records += 1
         else:
-            #якщо такий контакт вже є, то додаємо новий номер number_to_add до наявного контакку
-            contact_name = record.name.value
-            number_to_add, = record.phones
-            result = self.data[contact_name].add_number(number_to_add)
-        return result
+            phone, = record.phones
+            result = self.data[user].phones.append(phone)
+        return warnings.DONE
 
 
-    def del_record(self, name: str) -> str:
+    def __sub__(self, name: str) -> str:
         """
         видаляємо контакт за імʼям за телефонної книги
         """

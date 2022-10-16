@@ -1,3 +1,4 @@
+DONE                    = "...Done..."
 COMMAND_NOT_FOUND       = "❗ command not valid ❗"
 EXIT                    = "-- Good by! --"
 INPUT                   = 'Input command ▶ : '
@@ -10,6 +11,7 @@ NAME_NUMBER_NOT_CORRECT = '-- The name and the phone number are not correct --'
 ENTER_NAME_USER         = "-- Enter the user's name --"
 CONTACT_DELETED         = '... contact deleted ...'
 TOO_MUCH_ARGS           = '-- Too much arguments. Try again --'
+DATA_INVALID            = '-- Invalid data --'
 ENTER_PHONE_NUMBER      = '-- Enter phone number --'
 LOGO = """
  ######   #     #  #######  #     #  #######  ######   #######  #######  #    # 
