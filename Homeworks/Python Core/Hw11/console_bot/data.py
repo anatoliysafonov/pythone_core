@@ -1,14 +1,17 @@
 from collections import UserDict
 from datetime import datetime
+from email.headerregistry import Address
 from os import system as _system
 import message
 import re
+import pickle
+from pathlib import Path
 
 
 def start_message():
     _system('clear')
     print(message.LOGO)
-    print(message.START_MESSAGE)
+    # print(message.START_MESSAGE)
 
 
 class Field:
@@ -150,6 +153,16 @@ class AdressBook(UserDict):
     """
     total_records = 0
 
+    def __init__(self):
+        super().__init__()
+        cwd = Path.cwd()
+        cwd = cwd / message.FILE_NAME
+        if cwd.exists():
+             with open (cwd, 'rb') as file:    
+                book = pickle.load(file)
+                self.data = book
+                AdressBook.total_records = len(self.data)
+
     def __add__(self, record: Record) -> str:
         """ Додаємо нову запис чи додоткові телефони до телефонної книги """
         user = record.name.value
@@ -167,12 +180,11 @@ class AdressBook(UserDict):
         видаляємо контакт за імʼям за телефонної книги
         """
         try:
-            self.pop(name)
+            self.data.pop(name)
         except KeyError:
             return (message.CONTACT_NOT_FOUND)
         else:
             return message.DONE
-
 
     def __len__(self):
         """ Повертаємо кількість записів в телефонній книзі"""
@@ -181,7 +193,7 @@ class AdressBook(UserDict):
 
     def iterator(self, num, pages):
         
-        list_of_keys = list(self)
+        list_of_keys = list(self.data)
         for i in range(pages):
             yield list_of_keys[i*num: i*num + num]
 

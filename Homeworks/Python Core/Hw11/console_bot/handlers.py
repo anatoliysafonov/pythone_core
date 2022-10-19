@@ -1,12 +1,12 @@
 from decorator import input_error
 from os import system as _system
+import pickle
 import message 
 import data
 import re
 
-
-
 PHONEBOOK = data.AdressBook()
+
 NEW_LINE = '\n'
 SEPARATOR = ', '
 LINE = '+'+'-'*20+'+'+'-'*50+'+'+'-'*20+"+"
@@ -135,9 +135,9 @@ def show_all (*args):
     Виводить в консоль усі записи в телефонній книзі
     Якщо книга велика, інформація виводиться меньшими порціями
     """
-    MAX_SIZE = 3
-    total_records = len(PHONEBOOK)
-    keys = list(PHONEBOOK)
+    MAX_SIZE = 5
+    total_records = len(PHONEBOOK.data)
+    keys = list(PHONEBOOK.data)
     pages = total_records // MAX_SIZE
     pages = pages if total_records % MAX_SIZE == 0 else pages + 1
 
@@ -160,11 +160,32 @@ def show_all (*args):
         char = input('press "C" to escape or any key to continue : ')
         if char == 'c' or char == "C":
             break
-    return None
+    return message.DONE
+
+
+def find(*args):
+    value, *_ = args
+    finded_users = []
+    table = None
+    for user in PHONEBOOK.data.values():
+        name = user.name.value
+        phones = ', '.join([ phone.value for phone in user.phones])
+        if user.birthday:
+            bd = user.birthday.value
+        else:
+            bd = '--'
+        if value in name or value in phones or value in bd:
+            finded_users.append(name)
+    if finded_users:
+        table = table_build(finded_users)
+    return table
 
 
 def stop(*args) -> str:
     """ exit script """
+    if PHONEBOOK:
+        with open (message.FILE_NAME, 'wb') as fh:
+            pickle.dump(PHONEBOOK.data, fh)
     return '-- Good by! --'
 
 
@@ -195,6 +216,7 @@ def days(*args):
 def console_clear(*args):
     """ clear consol """
     _system('clear')
+    return ''
     
 
 
@@ -214,6 +236,7 @@ FUNCTIONS = {
     'birthday': phone,
     'set birthday': set_birthday,
     'days':days,
+    'find': find,
 }
 
 
@@ -230,6 +253,14 @@ def parse_string(command: str) -> tuple:
                 first_space = arguments.find(' ')
                 arguments = arguments[first_space:]
             func = FUNCTIONS[comm]
-            arguments = arguments.strip().split()
+            if func is None:
+                func = FUNCTIONS['find']
+                arguments = [command]
+            else:
+                arguments = arguments.strip().split()
             break
+    if func is None:
+         func = FUNCTIONS['find']
+         arguments = [command]
+    print(func, arguments)
     return func, arguments
