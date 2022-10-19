@@ -1,6 +1,6 @@
 from decorator import input_error
 from os import system as _system
-import warnings
+import message 
 import data
 import re
 
@@ -36,17 +36,17 @@ def footer_build(start:int, end:int, page:int,total:int)->str:
     if start == end:
         left = '{}th record'.format(end)
     else:    
-        left = '1 ◀ {}..{} ▶ {} records'.format(start, end, len(PHONEBOOK))
+        left = '1 ◀ {}..{} ▶ {} (records)'.format(start, end, len(PHONEBOOK))
     
-    footer = '{} {:>15}'.format(left, right)
+    footer = '{}{:>15}'.format(left, right)
     return NEW_LINE + footer
 
 @input_error
 def add(*args ) -> str:
     """  Adds a new entry to the phonebook """
-    if not args     : raise IndexError(warnings.ENTER_NAME_USER)
-    if len(args) < 2: raise IndexError(warnings.ENTER_PHONE_NUMBER)
-    if len(args) > 3: raise IndexError(warnings.TOO_MUCH_ARGS)
+    if not args     : raise IndexError(message.ENTER_NAME_USER)
+    if len(args) < 2: raise IndexError(message.ENTER_PHONE_NUMBER)
+    if len(args) > 3: raise IndexError(message.TOO_MUCH_ARGS)
     user_name, number, *birthday = args
     record = data.Record(user_name, number, *birthday)
     return PHONEBOOK + record
@@ -57,9 +57,9 @@ def add(*args ) -> str:
 def change(*args) -> str:
     """ Changes the phone number of an existing entry in the phone book """
     
-    if not args or len(args) < 3: raise IndexError(warnings.NAME_NUMBER_NOT_CORRECT)
+    if not args or len(args) < 3: raise IndexError(message.NAME_NUMBER_NOT_CORRECT)
     user, old, new, *_ = args
-    if user not in PHONEBOOK: raise ValueError(warnings.CONTACT_NOT_FOUND)
+    if user not in PHONEBOOK: raise ValueError(message.CONTACT_NOT_FOUND)
     record = PHONEBOOK.data[user]
     return record.change(user, old, new)
 
@@ -68,7 +68,7 @@ def change(*args) -> str:
 def delete(*args) -> str:
     """ Delete the phone number of an existing entry in the phone book """
 
-    if not args or len(args) < 2: raise IndexError(warnings.ENTER_NAME_NUMBER)
+    if not args or len(args) < 2: raise IndexError(message.ENTER_NAME_NUMBER)
     user_name, number, *_ = args
     record = PHONEBOOK.data[user_name]
     return record.delete(number)
@@ -79,7 +79,7 @@ def delete(*args) -> str:
 def contact_delete(*args):
     """ Delete entire record from phonebook """
 
-    if not args: raise ValueError(warnings.ENTER_NAME_NUMBER)
+    if not args: raise ValueError(message.ENTER_NAME_NUMBER)
     user, *_ = args
     result =  PHONEBOOK - user
     data.AdressBook.total_records -= 1
@@ -92,8 +92,8 @@ def contact_delete(*args):
 def name(*args) -> str:
     """ Searches for a record by phone number or by date of birth. Return name of contact : numbers """
 
-    if not args: raise IndexError(warnings.NUMBER_NOT_FOUND)
-    return_message = warnings.CONTACT_NOT_FOUND
+    if not args: raise IndexError(message.NUMBER_NOT_FOUND)
+    return_message = message.CONTACT_NOT_FOUND
     string, *_ = args
     records = []
     if is_phone(string):
@@ -107,7 +107,7 @@ def name(*args) -> str:
             if string == record.birthday.value:
                 records.append(record.name.value)
 
-    if not records: raise ValueError (warnings.CONTACT_NOT_FOUND)
+    if not records: raise ValueError (message.CONTACT_NOT_FOUND)
     return_message = table_build(records)
     return return_message
 
@@ -117,9 +117,9 @@ def name(*args) -> str:
 def phone(*args) -> str:
     """ Searches for a record by name and return  name : numbers """
 
-    if not args: raise ValueError(warnings.ENTER_USER_NAME)
+    if not args: raise ValueError(message.ENTER_USER_NAME)
     user_name, *_ = args
-    if user_name not in PHONEBOOK.data: raise KeyError(warnings.CONTACT_NOT_FOUND)
+    if user_name not in PHONEBOOK.data: raise KeyError(message.CONTACT_NOT_FOUND)
     message_out = table_build([user_name])
     return message_out
 
@@ -142,7 +142,7 @@ def show_all (*args):
     pages = pages if total_records % MAX_SIZE == 0 else pages + 1
 
     if not PHONEBOOK.data: 
-        return warnings.PHONEBOOK_IS_EMPTY
+        return message.PHONEBOOK_IS_EMPTY
     number_rows = total_records 
     if number_rows > MAX_SIZE:
         number_rows = MAX_SIZE
@@ -172,22 +172,22 @@ def stop(*args) -> str:
 @input_error
 def set_birthday(*args):
     if not args or len(args) < 2:
-        raise ValueError ('-- Input name and date to set birthday -- ')
+        raise ValueError (message.VALID_DATA)
     name , date, *_ = args
     if name in PHONEBOOK.data:
         PHONEBOOK.data[name].birthday = date
     else:
-        return warnings.CONTACT_NOT_FOUND
-    return warnings.DONE
+        return message.CONTACT_NOT_FOUND
+    return message.DONE
 
 
 @input_error
 def days(*args):
     if not args:
-        raise ValueError(warnings.CONTACT_NOT_FOUND)
+        raise ValueError(message.CONTACT_NOT_FOUND)
     name, *_ = args
     if name not in PHONEBOOK:
-        raise ValueError(warnings.CONTACT_NOT_FOUND)  
+        raise ValueError(message.CONTACT_NOT_FOUND)  
     return 'To next birthday(days):{}'.format(PHONEBOOK[name].days())
     
 

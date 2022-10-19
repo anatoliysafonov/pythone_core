@@ -1,14 +1,14 @@
 from collections import UserDict
 from datetime import datetime
 from os import system as _system
-import warnings
+import message
 import re
 
 
 def start_message():
     _system('clear')
-    print(warnings.LOGO)
-    print(warnings.START_MESSAGE)
+    print(message.LOGO)
+    print(message.START_MESSAGE)
 
 
 class Field:
@@ -23,8 +23,7 @@ class Field:
 
     @value.setter
     def value(self, new_value:str) ->str:
-        pass
-
+        self._value = new_value
 
 
 class Phone(Field):
@@ -36,6 +35,7 @@ class Phone(Field):
         if not normalize_new_value.isdigit() or len(normalize_new_value) != 10:
             raise ValueError('-- ❗ Phone number is invalid. Number cant containts "(", ")", "-", and have 10 digit\'s length--')
         self._value = normalize_new_value
+
 
     def __eq__(self, other: object) -> bool:
         if isinstance(other, type(self)):
@@ -50,7 +50,7 @@ class Name (Field):
     def value(self, new_value:str) -> None:
         MAX_LENGTH = 10
         if new_value[0].isdigit() or len(new_value) > MAX_LENGTH:
-            raise ValueError(warnings.INVALID_DATA)
+            raise ValueError(message.DATA_INVALID)
         self._value = new_value
 
 
@@ -62,7 +62,7 @@ class Birthday(Field):
         try:
             datetime.strptime(new_value, '%d/%m/%Y')
         except ValueError:
-            raise ValueError(warnings.INVALID_DATA)
+            raise ValueError(message.DATA_INVALID)
         self._value = new_value
 
 
@@ -93,19 +93,19 @@ class Record:
             self._birthday = date
         else:
             self._birthday = None
-        return warnings.DONE
+        return message.DONE
 
     
 
 
     def __add__(self, phone) -> str:
         """ добавляє новий номсер телефона якщо його немає в списку """
-        if phone in self.phones: raise ValueError(warnings.NUMBER_EXISTS)
+        if phone in self.phones: raise ValueError(message.NUMBER_EXISTS)
         self.phones.append(phone)
-        return warnings.DONE
+        return message.DONE
 
     def __sub__(self,phone):
-        if phone not in self.phones: raise ValueError(warnings.CONTANT_NOT_FOUND)
+        if phone not in self.phones: raise ValueError(message.CONTANT_NOT_FOUND)
         self.phones.remove(phone)
 
     def change(self, name: str, old: str, new: str) -> str:
@@ -114,12 +114,12 @@ class Record:
         new = Phone(new)
         self - old
         self + new
-        return warnings.DONE
+        return message.DONE
         
 
     def days(self) -> int:
         """ Повертає кількість днів до дня нарожддення """
-        if self.birthday is None: raise ValueError(warnings.BIRTHDAY_NOT_SET)
+        if self.birthday is None: raise ValueError(message.BIRTHDAY_NOT_SET)
         day, mouth, _ = self.birthday.value.split('/')
         now = datetime.now()
         this_year = datetime(day=int(day), month=int(mouth), year=int(now.year))
@@ -136,7 +136,7 @@ class Record:
         повертає в строковій формі інформацію про запис
         """
         name = self.name.value
-        phones = warnings.SEPARATOR.join([phone.value for phone in self.phones])
+        phones = message.SEPARATOR.join([phone.value for phone in self.phones])
         if self.birthday:
             birthday = self.birthday.value
         else:
@@ -159,7 +159,7 @@ class AdressBook(UserDict):
         else:
             phone, = record.phones
             result = self.data[user].phones.append(phone)
-        return warnings.DONE
+        return message.DONE
 
 
     def __sub__(self, name: str) -> str:
@@ -169,9 +169,9 @@ class AdressBook(UserDict):
         try:
             self.pop(name)
         except KeyError:
-            return (warnings.CONTACT_NOT_FOUND)
+            return (message.CONTACT_NOT_FOUND)
         else:
-            return warnings.CONTACT_DELETED
+            return message.DONE
 
 
     def __len__(self):

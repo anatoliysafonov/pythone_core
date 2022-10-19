@@ -1,5 +1,5 @@
 from handlers import parse_string
-from warnings import INPUT, COMMAND_NOT_FOUND, EXIT
+from message import INPUT, COMMAND_NOT_FOUND, EXIT
 import data
 
 
