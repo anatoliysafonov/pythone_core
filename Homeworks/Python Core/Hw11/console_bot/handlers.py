@@ -162,8 +162,10 @@ def show_all (*args):
             break
     return message.DONE
 
-
+@input_error
 def find(*args):
+    if not args:
+        raise ValueError(message.FIND_ARG_NOT_VALID)
     value, *_ = args
     finded_users = []
     table = None
