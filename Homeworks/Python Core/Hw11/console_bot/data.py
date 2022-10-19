@@ -1,6 +1,5 @@
 from collections import UserDict
 from datetime import datetime
-from email.headerregistry import Address
 from os import system as _system
 import message
 import re
@@ -190,6 +189,9 @@ class AdressBook(UserDict):
         """ Повертаємо кількість записів в телефонній книзі"""
         return AdressBook.total_records
 
+    def save(self):
+        with open (message.FILE_NAME, 'wb') as fh:
+            pickle.dump(self.data, fh)
 
     def iterator(self, num, pages):
         

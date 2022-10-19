@@ -1,6 +1,5 @@
 from decorator import input_error
 from os import system as _system
-import pickle
 import message 
 import data
 import re
@@ -185,9 +184,6 @@ def find(*args):
 
 def stop(*args) -> str:
     """ exit script """
-    if PHONEBOOK:
-        with open (message.FILE_NAME, 'wb') as fh:
-            pickle.dump(PHONEBOOK.data, fh)
     return '-- Good by! --'
 
 
