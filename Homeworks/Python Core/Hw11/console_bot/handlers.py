@@ -262,5 +262,4 @@ def parse_string(command: str) -> tuple:
     if func is None:
          func = FUNCTIONS['find']
          arguments = [command]
-    print(func, arguments)
     return func, arguments
