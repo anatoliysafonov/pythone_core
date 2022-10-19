@@ -1,5 +1,8 @@
+from multiprocessing.sharedctypes import Value
+from pathlib import Path
 from decorator import input_error
 from os import system as _system
+from pickle import dump
 import message 
 import data
 import re
@@ -186,6 +189,17 @@ def stop(*args) -> str:
     """ exit script """
     return '-- Good by! --'
 
+@input_error
+def save(*args):
+    if not PHONEBOOK.data:
+        raise ValueError('Nothing to save. Add some contact')
+    current_directory = Path.cwd()
+    file_name = current_directory / message.FILE_NAME
+    with open (file_name, 'wb') as file:
+        dump(PHONEBOOK.data, file)
+    return '... Saved ...'
+
+
 
 
 @input_error
@@ -235,6 +249,7 @@ FUNCTIONS = {
     'set birthday': set_birthday,
     'days':days,
     'find': find,
+    'save':save
 }
 
 
