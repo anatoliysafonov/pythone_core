@@ -114,8 +114,11 @@ class Record:
         """ міняє номер існуючого контакту з існуючим номером на новий номер """
         old = Phone(old)
         new = Phone(new)
-        self - old
-        self + new
+        for index, phone in enumerate(self.phones):
+            if phone == old:
+                self.phones[index] = new
+        #self - old
+        #self + new
         return message.DONE
         
 
@@ -132,7 +135,9 @@ class Record:
         phone = Phone(phone)
         self - phone
         return '...Done...'
-    
+    def __eq__(self, phone):
+        return self.value == phone.value
+
     def __str__(self) ->str:
         """
         повертає в строковій формі інформацію про запис
@@ -170,7 +175,8 @@ class AdressBook(UserDict):
             AdressBook.total_records += 1
         else:
             phone, = record.phones
-            result = self.data[user].phones.append(phone)
+            #result = self.data[user].phones.append(phone)
+            result = self.data[user] + phone
         return message.DONE
 
 

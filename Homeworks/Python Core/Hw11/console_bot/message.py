@@ -13,7 +13,8 @@ CONTACT_DELETED         = '... contact deleted ...'
 TOO_MUCH_ARGS           = '-- Too much arguments. Try again --'
 DATA_INVALID            = '-- Invalid data --'
 ENTER_PHONE_NUMBER      = '-- Enter phone number --'
-FIND_ARG_NOT_VALID     = '-- Enter string to search --'
+FIND_ARG_NOT_VALID      = '-- Enter string to search --'
+NUMBER_EXISTS            = '-- Number exists already --'    
 FILE_NAME               = 'data.bin'
 LOGO = """
  ######   #     #  #######  #     #  #######  ######   #######  #######  #    # 
